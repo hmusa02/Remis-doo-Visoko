@@ -8,9 +8,10 @@ import { statusStanice, type RadnoVrijeme } from '../lib/radno-vrijeme';
  */
 interface Props {
   radnoVrijeme: RadnoVrijeme;
+  istakniSubota?: boolean;
   class?: string;
 }
-const { radnoVrijeme, class: klasa = '' } = Astro.props;
+const { radnoVrijeme, istakniSubota = false, class: klasa = '' } = Astro.props;
 
 const status = statusStanice(radnoVrijeme);
 const p = status.sljedecaPromjena;
@@ -25,9 +26,9 @@ const linija = p
 const fmt = (v: string): string => (/\d/.test(v) ? v.replace('-', ' – ') : 'Zatvoreno');
 
 const redovi = [
-  { dan: 'Ponedjeljak – petak', vrijeme: radnoVrijeme.ponPet },
-  { dan: 'Subota', vrijeme: radnoVrijeme.subota },
-  { dan: 'Nedjelja', vrijeme: radnoVrijeme.nedjelja },
+  { dan: 'Ponedjeljak – petak', vrijeme: radnoVrijeme.ponPet, naglasi: false },
+  { dan: 'Subota', vrijeme: radnoVrijeme.subota, naglasi: istakniSubota },
+  { dan: 'Nedjelja', vrijeme: radnoVrijeme.nedjelja, naglasi: false },
 ];
 ---
 
@@ -47,9 +48,12 @@ const redovi = [
   <dl class="mt-4 divide-y divide-ink-100">
     {
       redovi.map((r) => (
-        <div class="flex items-center justify-between py-2.5 text-sm">
-          <dt class="text-ink-600">{r.dan}</dt>
-          <dd class="tabular-nums font-medium text-ink-900">{fmt(r.vrijeme)}</dd>
+        <div class={`flex items-center justify-between py-2.5 text-sm ${r.naglasi ? 'px-2 -mx-2 rounded-md bg-brand-100/60' : ''}`}>
+          <dt class={r.naglasi ? 'text-brand-900 font-semibold' : 'text-ink-600'}>
+            {r.dan}
+            {r.naglasi && <span class="ml-1.5 text-[10px] uppercase tracking-wide text-brand-700">radi vikendom</span>}
+          </dt>
+          <dd class={`tabular-nums font-medium ${r.naglasi ? 'text-brand-900' : 'text-ink-900'}`}>{fmt(r.vrijeme)}</dd>
         </div>
       ))
     }

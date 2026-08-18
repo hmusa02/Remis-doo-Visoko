@@ -1,0 +1,155 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Icon from './Icon.astro';
+import type { ImageMetadata } from 'astro';
+
+/**
+ * Horizontalna galerija (scroll-snap) + lightbox. Bez teške biblioteke:
+ * CSS scroll-snap za listanje, native <dialog> za lightbox (Esc, backdrop i
+ * fokus-trap dobijemo besplatno), malo vanilla JS-a za strelice i navigaciju.
+ *
+ * Sve slike su ravnopravne, isti omjer 4:3 (object-cover). Male thumbnaile
+ * učitavamo lazy; uvećane (pune) verzije se učitaju tek pri otvaranju lightboxa.
+ */
+interface Props {
+  slike: ImageMetadata[];
+  naziv: string;
+}
+const { slike, naziv } = Astro.props;
+
+// Uvećane verzije za lightbox (URL ide u data-atribut, ne učitava se odmah).
+const pune = await Promise.all(
+  slike.map((s) => getImage({ src: s, width: 1400, format: 'webp' })),
+);
+---
+
+<section class="wrap mt-10" aria-label="Galerija fotografija">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-title text-ink-900">Galerija</h2>
+    <div class="hidden md:flex gap-2" data-strelice>
+      <button type="button" class="galerija-strelica" data-prev aria-label="Pomjeri lijevo">
+        <Icon name="chevron-left" size={20} />
+      </button>
+      <button type="button" class="galerija-strelica" data-next aria-label="Pomjeri desno">
+        <Icon name="chevron-right" size={20} />
+      </button>
+    </div>
+  </div>
+
+  <ul class="galerija-traka" data-traka>
+    {
+      slike.map((img, i) => (
+        <li class="galerija-slide-wrap">
+          <button
+            type="button"
+            class="galerija-slide"
+            data-index={i}
+            data-full={pune[i]!.src}
+            aria-label={`Otvori sliku ${i + 1} od ${slike.length}`}
+          >
+            <Image
+              src={img}
+              alt={`${naziv} — fotografija ${i + 1}`}
+              widths={[240, 480]}
+              sizes="260px"
+              loading="lazy"
+              class="w-full h-full object-cover"
+            />
+          </button>
+        </li>
+      ))
+    }
+  </ul>
+
+  <dialog class="lightbox" data-lightbox aria-label="Uvećana slika">
+    <div class="lightbox-inner" data-lb-backdrop>
+      <button type="button" class="lightbox-btn lightbox-close" data-lb-close aria-label="Zatvori">
+        <Icon name="close" size={24} />
+      </button>
+      <button type="button" class="lightbox-btn lightbox-prev" data-lb-prev aria-label="Prethodna slika">
+        <Icon name="chevron-left" size={28} />
+      </button>
+      <img class="lightbox-img" data-lb-img alt="" />
+      <button type="button" class="lightbox-btn lightbox-next" data-lb-next aria-label="Sljedeća slika">
+        <Icon name="chevron-right" size={28} />
+      </button>
+      <p class="lightbox-brojac" data-lb-count aria-live="polite"></p>
+    </div>
+  </dialog>
+</section>
+
+<script>
+  const traka = document.querySelector<HTMLElement>('[data-traka]');
+  const prev = document.querySelector<HTMLButtonElement>('[data-prev]');
+  const next = document.querySelector<HTMLButtonElement>('[data-next]');
+  const strelice = document.querySelector<HTMLElement>('[data-strelice]');
+  const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+  const lbImg = document.querySelector<HTMLImageElement>('[data-lb-img]');
+  const lbCount = document.querySelector<HTMLElement>('[data-lb-count]');
+  const slides = Array.from(document.querySelectorAll<HTMLElement>('.galerija-slide'));
+
+  // --- Listanje trake strelicama (desktop) ---
+  function korak(): number {
+    const w = traka?.querySelector<HTMLElement>('.galerija-slide-wrap');
+    return w ? w.getBoundingClientRect().width + 12 : 272;
+  }
+  prev?.addEventListener('click', () => traka?.scrollBy({ left: -korak(), behavior: 'smooth' }));
+  next?.addEventListener('click', () => traka?.scrollBy({ left: korak(), behavior: 'smooth' }));
+
+  // Sakrij strelice kad nema šta za listati (jedna–dvije slike)
+  function osvjeziStrelice(): void {
+    if (!traka || !strelice) return;
+    const moze = traka.scrollWidth > traka.clientWidth + 4;
+    strelice.style.visibility = moze ? 'visible' : 'hidden';
+  }
+  osvjeziStrelice();
+  window.addEventListener('resize', osvjeziStrelice);
+
+  // --- Lightbox (native <dialog>) ---
+  let idx = 0;
+  let vratiFokus: HTMLElement | null = null;
+
+  function prikazi(i: number): void {
+    if (slides.length === 0) return;
+    idx = (i + slides.length) % slides.length;
+    const slide = slides[idx]!;
+    if (lbImg) {
+      lbImg.src = slide.dataset.full ?? '';
+      lbImg.alt = slide.querySelector('img')?.alt ?? '';
+    }
+    if (lbCount) lbCount.textContent = `${idx + 1} / ${slides.length}`;
+  }
+  function otvori(i: number, okidac: HTMLElement): void {
+    if (!dialog) return;
+    vratiFokus = okidac;
+    prikazi(i);
+    dialog.showModal();
+  }
+
+  slides.forEach((s, i) => s.addEventListener('click', () => otvori(i, s)));
+  document.querySelector('[data-lb-prev]')?.addEventListener('click', () => prikazi(idx - 1));
+  document.querySelector('[data-lb-next]')?.addEventListener('click', () => prikazi(idx + 1));
+  document.querySelector('[data-lb-close]')?.addEventListener('click', () => dialog?.close());
+
+  // Klik izvan slike (na pozadinu) zatvara
+  document.querySelector('[data-lb-backdrop]')?.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) dialog?.close();
+  });
+
+  // Strelice tastature (Esc rješava <dialog> nativno)
+  dialog?.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      prikazi(idx - 1);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      prikazi(idx + 1);
+    }
+  });
+
+  // Vrati fokus i oslobodi punu sliku na zatvaranje
+  dialog?.addEventListener('close', () => {
+    vratiFokus?.focus();
+    lbImg?.removeAttribute('src');
+  });
+</script>

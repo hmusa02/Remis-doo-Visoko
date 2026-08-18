@@ -12,8 +12,10 @@ interface Props {
   telefon: string;
   radnoVrijeme: RadnoVrijeme;
   href?: string;
+  slug?: string;
+  kanton?: string;
 }
-const { naziv, grad, adresa, telefon, radnoVrijeme, href } = Astro.props;
+const { naziv, grad, adresa, telefon, radnoVrijeme, href, slug, kanton } = Astro.props;
 
 const status = statusStanice(radnoVrijeme);
 const p = status.sljedecaPromjena;
@@ -30,7 +32,10 @@ const telDigits = telefon.replace(/[^\d+]/g, '');
 
 <article
   data-radno={JSON.stringify(radnoVrijeme)}
-  class="card card--hover p-5 flex flex-col gap-4"
+  data-stanica={slug}
+  data-grad={grad}
+  data-kanton={kanton}
+  class="card card--hover p-5 flex flex-col gap-4 scroll-mt-24"
 >
   <div class="flex items-start justify-between gap-3">
     <div>

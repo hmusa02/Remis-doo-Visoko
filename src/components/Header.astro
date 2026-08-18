@@ -1,17 +1,22 @@
 ---
+import { getCollection } from 'astro:content';
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 import Button from './Button.astro';
 
-/** Zaglavlje s navigacijom i mobilnim menijem (bez skladištenja). */
+/** Zaglavlje s navigacijom, dropdownom stanica i mobilnim menijem (bez skladištenja). */
 interface Props {
   active?: string;
 }
 const { active } = Astro.props;
 
+const stanice = (await getCollection('stanice')).sort(
+  (a, b) => a.data.redoslijed - b.data.redoslijed,
+);
+
 const nav = [
   { label: 'Početna', href: '/' },
-  { label: 'Stanice', href: '/stanice' },
+  { label: 'Stanice', href: '/stanice', dropdown: true },
   { label: 'Usluge', href: '/usluge' },
   { label: 'Cjenovnik', href: '/cjenovnik' },
   { label: 'Karijera', href: '/karijera' },
@@ -27,15 +32,37 @@ const nav = [
 
     <nav class="hidden md:flex items-center gap-0.5" aria-label="Glavna navigacija">
       {
-        nav.map((n) => (
-          <a
-            href={n.href}
-            class="nav-link"
-            aria-current={active === n.href ? 'page' : undefined}
-          >
-            {n.label}
-          </a>
-        ))
+        nav.map((n) =>
+          n.dropdown ? (
+            <div class="dropdown">
+              <a
+                href={n.href}
+                class="nav-link inline-flex items-center gap-1"
+                aria-current={active === n.href ? 'page' : undefined}
+                aria-haspopup="true"
+              >
+                {n.label}
+                <Icon name="chevron-down" size={14} />
+              </a>
+              <div class="dropdown-panel">
+                {stanice.map((s) => (
+                  <a href={`/stanice/${s.data.slug}`} class="dropdown-item">
+                    <span>{s.data.naziv}</span>
+                    <span class="grad">{s.data.grad}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <a
+              href={n.href}
+              class="nav-link"
+              aria-current={active === n.href ? 'page' : undefined}
+            >
+              {n.label}
+            </a>
+          ),
+        )
       }
     </nav>
 
@@ -58,17 +85,28 @@ const nav = [
 
   <div id="mobilni-meni" class="md:hidden hidden border-t border-ink-200 bg-white" data-menu-panel>
     <nav class="wrap py-3 flex flex-col" aria-label="Glavna navigacija (mobilna)">
-      {
-        nav.map((n) => (
-          <a
-            href={n.href}
-            class="mobilni-link"
-            aria-current={active === n.href ? 'page' : undefined}
-          >
-            {n.label}
-          </a>
-        ))
-      }
+      <a href="/" class="mobilni-link" aria-current={active === '/' ? 'page' : undefined}>Početna</a>
+
+      <details class="border-b border-ink-100">
+        <summary class="mobilni-link list-none flex items-center justify-between cursor-pointer">
+          <span>Stanice</span>
+          <Icon name="chevron-down" size={18} class="text-ink-400" />
+        </summary>
+        <div class="pb-2">
+          <a href="/stanice" class="block py-2 pl-3 text-sm font-semibold text-brand-700">Sve stanice →</a>
+          {stanice.map((s) => (
+            <a href={`/stanice/${s.data.slug}`} class="block py-2 pl-3 text-sm text-ink-700">
+              {s.data.naziv} <span class="text-ink-400">· {s.data.grad}</span>
+            </a>
+          ))}
+        </div>
+      </details>
+
+      <a href="/usluge" class="mobilni-link" aria-current={active === '/usluge' ? 'page' : undefined}>Usluge</a>
+      <a href="/cjenovnik" class="mobilni-link" aria-current={active === '/cjenovnik' ? 'page' : undefined}>Cjenovnik</a>
+      <a href="/karijera" class="mobilni-link" aria-current={active === '/karijera' ? 'page' : undefined}>Karijera</a>
+      <a href="/kontakt" class="mobilni-link" aria-current={active === '/kontakt' ? 'page' : undefined}>Kontakt</a>
+
       <Button href="/kontakt" block class="mt-4">Zakaži pregled</Button>
     </nav>
   </div>
@@ -77,7 +115,7 @@ const nav = [
 <script>
   const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
   const panel = document.querySelector<HTMLElement>('[data-menu-panel]');
-  const ikoneOpen = document.querySelector<HTMLElement>('[data-menu-icon="open"]');
+  const ikonaOpen = document.querySelector<HTMLElement>('[data-menu-icon="open"]');
   const ikonaClose = document.querySelector<HTMLElement>('[data-menu-icon="close"]');
 
   function postavi(otvoren: boolean): void {
@@ -85,7 +123,7 @@ const nav = [
     panel.classList.toggle('hidden', !otvoren);
     toggle.setAttribute('aria-expanded', String(otvoren));
     toggle.setAttribute('aria-label', otvoren ? 'Zatvori meni' : 'Otvori meni');
-    ikoneOpen?.classList.toggle('hidden', otvoren);
+    ikonaOpen?.classList.toggle('hidden', otvoren);
     ikonaClose?.classList.toggle('hidden', !otvoren);
   }
 

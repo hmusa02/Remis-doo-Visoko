@@ -1,0 +1,182 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import StanicaKartica from '../../components/StanicaKartica.astro';
+import type { MarkerPodatak } from '../../lib/mapa';
+
+const stanice = (await getCollection('stanice')).sort(
+  (a, b) => a.data.redoslijed - b.data.redoslijed,
+);
+
+const gradovi = [...new Set(stanice.map((s) => s.data.grad))].sort((a, b) =>
+  a.localeCompare(b, 'bs'),
+);
+const kantoni = [...new Set(stanice.map((s) => s.data.kanton))].sort();
+
+const markeri: MarkerPodatak[] = stanice.map((s) => ({
+  slug: s.data.slug,
+  naziv: s.data.naziv,
+  lng: s.data.lng,
+  lat: s.data.lat,
+}));
+---
+
+<PageLayout
+  title="Stanice tehničkog pregleda — REMIS"
+  description="Sve REMIS stanice tehničkog pregleda u Federaciji BiH — adrese, radno vrijeme i lokacije na mapi."
+  active="/stanice"
+>
+  <section class="wrap pt-8 pb-4">
+    <Breadcrumbs items={[{ label: 'Početna', href: '/' }, { label: 'Stanice' }]} />
+    <div class="mt-6">
+      <SectionHeading
+        as="h1"
+        eyebrow="Mreža stanica"
+        title="Naše stanice"
+        description="Deset stanica tehničkog pregleda širom Federacije BiH. Odaberite najbližu — provjerite radno vrijeme i lokaciju."
+      />
+    </div>
+  </section>
+
+  <!-- Mapa -->
+  <section class="wrap">
+    <div
+      class="mapa h-72 md:h-[440px]"
+      data-mapa-lista
+      data-markeri={JSON.stringify(markeri)}
+      role="region"
+      aria-label="Mapa svih stanica"
+    >
+      <noscript>
+        <div class="mapa-fallback">Za prikaz mape potreban je JavaScript. Spisak stanica je ispod.</div>
+      </noscript>
+    </div>
+  </section>
+
+  <!-- Filteri -->
+  <section class="wrap mt-8">
+    <div class="flex flex-col sm:flex-row sm:items-end gap-4" data-filteri>
+      <div class="flex-1">
+        <label for="filter-grad" class="block text-xs font-semibold uppercase tracking-wide text-ink-500 mb-1.5">Grad</label>
+        <select id="filter-grad" class="odabir">
+          <option value="">Svi gradovi</option>
+          {gradovi.map((g) => <option value={g}>{g}</option>)}
+        </select>
+      </div>
+      <div class="flex-1">
+        <label for="filter-kanton" class="block text-xs font-semibold uppercase tracking-wide text-ink-500 mb-1.5">Kanton</label>
+        <select id="filter-kanton" class="odabir">
+          <option value="">Svi kantoni</option>
+          {kantoni.map((k) => <option value={k}>{k}</option>)}
+        </select>
+      </div>
+      <button type="button" class="btn btn--ghost btn--sm" data-reset hidden>Poništi filter</button>
+    </div>
+    <p class="mt-3 text-sm text-ink-500" data-broj-rezultata aria-live="polite"></p>
+  </section>
+
+  <!-- Lista stanica -->
+  <section class="wrap mt-6 pb-8">
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-lista>
+      {
+        stanice.map((s) => (
+          <StanicaKartica
+            slug={s.data.slug}
+            naziv={s.data.naziv}
+            grad={s.data.grad}
+            kanton={s.data.kanton}
+            adresa={s.data.adresa}
+            telefon={s.data.telefon}
+            radnoVrijeme={s.data.radnoVrijeme}
+            href={`/stanice/${s.data.slug}`}
+          />
+        ))
+      }
+    </div>
+    <p class="hidden text-center text-ink-500 py-10" data-prazno>
+      Nema stanica koje odgovaraju odabranom filteru.
+    </p>
+  </section>
+</PageLayout>
+
+<script>
+  import { inicijalizirajMapu, type MarkerPodatak, type MapaRezultat } from '../../lib/mapa';
+
+  const kontejner = document.querySelector<HTMLElement>('[data-mapa-lista]');
+  const gradSel = document.querySelector<HTMLSelectElement>('#filter-grad');
+  const kantonSel = document.querySelector<HTMLSelectElement>('#filter-kanton');
+  const reset = document.querySelector<HTMLButtonElement>('[data-reset]');
+  const brojEl = document.querySelector<HTMLElement>('[data-broj-rezultata]');
+  const praznoEl = document.querySelector<HTMLElement>('[data-prazno]');
+  const kartice = Array.from(document.querySelectorAll<HTMLElement>('[data-stanica]'));
+
+  let mapa: MapaRezultat | null = null;
+
+  // --- Lijeno učitavanje mape (ne blokira prvi paint) ---
+  if (kontejner) {
+    let markeri: MarkerPodatak[] = [];
+    try {
+      markeri = JSON.parse(kontejner.dataset.markeri ?? '[]');
+    } catch {
+      markeri = [];
+    }
+
+    const obs = new IntersectionObserver(
+      (unosi, o) => {
+        if (!unosi.some((u) => u.isIntersecting) || mapa) return;
+        o.disconnect();
+        inicijalizirajMapu(kontejner, markeri, {
+          onMarkerClick: istakni,
+        }).then((r) => {
+          mapa = r;
+          primijeni(); // uskladi markere s trenutnim filterom
+        });
+      },
+      { rootMargin: '200px' },
+    );
+    obs.observe(kontejner);
+  }
+
+  function istakni(slug: string): void {
+    const kartica = document.querySelector<HTMLElement>(`[data-stanica="${slug}"]`);
+    if (!kartica || kartica.hidden) return;
+    kartica.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    kartica.classList.add('istaknuto');
+    window.setTimeout(() => kartica.classList.remove('istaknuto'), 2000);
+  }
+
+  // --- Filteri ---
+  function primijeni(): void {
+    const g = gradSel?.value ?? '';
+    const k = kantonSel?.value ?? '';
+    let vidljivih = 0;
+
+    kartice.forEach((kartica) => {
+      const ok =
+        (!g || kartica.dataset.grad === g) && (!k || kartica.dataset.kanton === k);
+      kartica.hidden = !ok;
+      if (ok) vidljivih++;
+
+      const slug = kartica.dataset.stanica;
+      const marker = slug ? mapa?.markeri[slug] : undefined;
+      if (marker) marker.getElement().style.display = ok ? '' : 'none';
+    });
+
+    if (brojEl) {
+      brojEl.textContent =
+        g || k ? `Prikazano ${vidljivih} od ${kartice.length} stanica.` : '';
+    }
+    if (praznoEl) praznoEl.classList.toggle('hidden', vidljivih !== 0);
+    if (reset) reset.hidden = !(g || k);
+  }
+
+  gradSel?.addEventListener('change', primijeni);
+  kantonSel?.addEventListener('change', primijeni);
+  reset?.addEventListener('click', () => {
+    if (gradSel) gradSel.value = '';
+    if (kantonSel) kantonSel.value = '';
+    primijeni();
+  });
+</script>

@@ -1,0 +1,72 @@
+---
+import type { MarkerPodatak } from '../lib/mapa';
+
+/**
+ * Mapa jedne ili više lokacija. MapLibre se učitava lijeno (IntersectionObserver
+ * + dinamički import) — ne blokira prvi paint. Bez JS-a ostaje neutralan
+ * kontejner (layout se ne lomi).
+ */
+interface Props {
+  markeri: MarkerPodatak[];
+  zoom?: number;
+  class?: string;
+  /** Ako true, klik na marker ističe karticu `[data-stanica]`. */
+  istakniKartice?: boolean;
+}
+const { markeri, zoom = 14, class: klasa = '', istakniKartice = false } = Astro.props;
+---
+
+<div
+  class={`mapa ${klasa}`}
+  data-mapa
+  data-zoom={zoom}
+  data-istakni={istakniKartice ? '1' : ''}
+  data-markeri={JSON.stringify(markeri)}
+  role="region"
+  aria-label="Mapa lokacija"
+>
+  <noscript>
+    <div class="mapa-fallback">Za prikaz mape potreban je JavaScript.</div>
+  </noscript>
+</div>
+
+<script>
+  import { inicijalizirajMapu, type MarkerPodatak, type MapaRezultat } from '../lib/mapa';
+
+  function istakni(slug: string): void {
+    const kartica = document.querySelector<HTMLElement>(`[data-stanica="${slug}"]`);
+    if (!kartica) return;
+    kartica.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    kartica.classList.add('istaknuto');
+    window.setTimeout(() => kartica.classList.remove('istaknuto'), 2000);
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-mapa]').forEach((el) => {
+    let markeri: MarkerPodatak[];
+    try {
+      markeri = JSON.parse(el.dataset.markeri ?? '[]');
+    } catch {
+      return;
+    }
+    if (markeri.length === 0) return;
+
+    const zoom = Number(el.dataset.zoom) || 14;
+    const istakniKartice = el.dataset.istakni === '1';
+
+    let rezultat: MapaRezultat | null = null;
+    const obs = new IntersectionObserver(
+      (unosi, o) => {
+        if (!unosi.some((u) => u.isIntersecting) || rezultat) return;
+        o.disconnect();
+        inicijalizirajMapu(el, markeri, {
+          zoom,
+          onMarkerClick: istakniKartice ? istakni : undefined,
+        }).then((r) => {
+          rezultat = r;
+        });
+      },
+      { rootMargin: '200px' },
+    );
+    obs.observe(el);
+  });
+</script>
