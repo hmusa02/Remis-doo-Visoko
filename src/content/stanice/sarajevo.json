@@ -1,0 +1,17 @@
+{
+  "slug": "sarajevo",
+  "naziv": "REMIS Sarajevo",
+  "grad": "Sarajevo",
+  "kanton": "KS",
+  "adresa": "Džemala Bijedića 139",
+  "postanskiBroj": "71000",
+  "lat": 43.849388,
+  "lng": 18.3545226,
+  "telefon": "033/466-537",
+  "radnoVrijeme": {
+    "ponPet": "07:30-15:30",
+    "subota": "08:00-10:30",
+    "nedjelja": "zatvoreno"
+  },
+  "redoslijed": 8
+}

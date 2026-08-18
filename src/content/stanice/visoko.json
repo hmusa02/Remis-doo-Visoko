@@ -1,0 +1,17 @@
+{
+  "slug": "visoko",
+  "naziv": "REMIS Visoko",
+  "grad": "Visoko",
+  "kanton": "ZE-DO",
+  "adresa": "Kakanjska bb",
+  "postanskiBroj": "71300",
+  "lat": 44.0015714,
+  "lng": 18.1594644,
+  "telefon": "032/735-932",
+  "radnoVrijeme": {
+    "ponPet": "07:30-15:30",
+    "subota": "08:00-10:30",
+    "nedjelja": "zatvoreno"
+  },
+  "redoslijed": 1
+}

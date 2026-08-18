@@ -1,0 +1,17 @@
+{
+  "slug": "vitez",
+  "naziv": "REMIS Vitez",
+  "grad": "Vitez",
+  "kanton": "SBK",
+  "adresa": "Poslovni centar 96",
+  "postanskiBroj": "72250",
+  "lat": 44.1666839,
+  "lng": 17.7896802,
+  "telefon": "030/710-749",
+  "radnoVrijeme": {
+    "ponPet": "07:30-17:00",
+    "subota": "07:30-12:00",
+    "nedjelja": "zatvoreno"
+  },
+  "redoslijed": 9
+}

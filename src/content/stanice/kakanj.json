@@ -1,0 +1,18 @@
+{
+  "slug": "kakanj",
+  "naziv": "REMIS Kakanj",
+  "grad": "Kakanj",
+  "kanton": "ZE-DO",
+  "adresa": "311. lahke brigade",
+  "postanskiBroj": "72240",
+  "lat": 44.1243889,
+  "lng": 18.1055577,
+  "telefon": "032/557-780",
+  "radnoVrijeme": {
+    "ponPet": "07:00-15:30",
+    "subota": "zatvoreno",
+    "nedjelja": "zatvoreno"
+  },
+  "pravnoLice": "\"Transport\" d.o.o. Kakanj, u sastavu REMIS-a",
+  "redoslijed": 4
+}

@@ -1,0 +1,17 @@
+{
+  "slug": "konjic-kolonija",
+  "naziv": "REMIS Konjic Kolonija",
+  "grad": "Konjic",
+  "kanton": "HNK",
+  "adresa": "Kolonija 60",
+  "postanskiBroj": "88400",
+  "lat": 43.656526,
+  "lng": 17.9537714,
+  "telefon": "036/734-861",
+  "radnoVrijeme": {
+    "ponPet": "07:30-15:30",
+    "subota": "08:00-10:30",
+    "nedjelja": "zatvoreno"
+  },
+  "redoslijed": 2
+}

@@ -1,0 +1,17 @@
+{
+  "slug": "konjic-ovcari",
+  "naziv": "REMIS Konjic Ovčari",
+  "grad": "Konjic",
+  "kanton": "HNK",
+  "adresa": "Ovčari bb",
+  "postanskiBroj": "88400",
+  "lat": 43.6690172,
+  "lng": 17.9781846,
+  "telefon": "036/735-880",
+  "radnoVrijeme": {
+    "ponPet": "07:30-15:30",
+    "subota": "08:00-10:30",
+    "nedjelja": "zatvoreno"
+  },
+  "redoslijed": 3
+}

@@ -1,0 +1,8 @@
+{
+  "slug": "eksploatacioni-pregled",
+  "naziv": "Eksploatacioni tehnički pregled",
+  "kratkiOpis": "Pregled vozila u stalnoj upotrebi, npr. taksi ili dostava.",
+  "opis": "Eksploatacioni pregled je namijenjen vozilima koja se koriste za rad, kao što su taksi, dostava ili iznajmljivanje. Ova vozila prelaze mnogo kilometara, pa se provjeravaju češće i temeljitije. Pregled potvrđuje da je vozilo sigurno za svakodnevni rad.",
+  "ikona": "clipboard-check",
+  "redoslijed": 9
+}

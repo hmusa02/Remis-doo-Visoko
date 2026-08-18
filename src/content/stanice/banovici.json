@@ -1,0 +1,17 @@
+{
+  "slug": "banovici",
+  "naziv": "REMIS Banovići",
+  "grad": "Banovići",
+  "kanton": "TK",
+  "adresa": "Branilaca 4",
+  "postanskiBroj": "75290",
+  "lat": 44.4132434,
+  "lng": 18.5381983,
+  "telefon": "035/871-300",
+  "radnoVrijeme": {
+    "ponPet": "07:30-17:00",
+    "subota": "07:30-12:00",
+    "nedjelja": "zatvoreno"
+  },
+  "redoslijed": 5
+}

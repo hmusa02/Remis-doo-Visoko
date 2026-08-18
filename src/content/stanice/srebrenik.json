@@ -1,0 +1,17 @@
+{
+  "slug": "srebrenik",
+  "naziv": "REMIS Srebrenik",
+  "grad": "Srebrenik",
+  "kanton": "TK",
+  "adresa": "Ćehaje bb (uz M1.8)",
+  "postanskiBroj": "75350",
+  "lat": 44.7208108,
+  "lng": 18.4875253,
+  "telefon": "035/",
+  "radnoVrijeme": {
+    "ponPet": "07:30-17:00",
+    "subota": "07:30-12:00",
+    "nedjelja": "zatvoreno"
+  },
+  "redoslijed": 7
+}
