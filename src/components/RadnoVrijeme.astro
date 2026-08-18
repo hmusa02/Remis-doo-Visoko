@@ -1,0 +1,61 @@
+---
+import { statusStanice, type RadnoVrijeme } from '../lib/radno-vrijeme';
+
+/**
+ * Prikaz radnog vremena s live statusom (otvoreno/zatvoreno + sljedeća
+ * promjena). Početni status je SSR (fallback), a klijentska skripta ga drži
+ * tačnim u realnom vremenu.
+ */
+interface Props {
+  radnoVrijeme: RadnoVrijeme;
+  class?: string;
+}
+const { radnoVrijeme, class: klasa = '' } = Astro.props;
+
+const status = statusStanice(radnoVrijeme);
+const p = status.sljedecaPromjena;
+const linija = p
+  ? status.otvorena
+    ? `Zatvara ${p.dan} u ${p.vrijeme}`
+    : `Otvara ${p.dan} u ${p.vrijeme}`
+  : status.otvorena
+    ? 'Otvoreno'
+    : 'Zatvoreno';
+
+const fmt = (v: string): string => (/\d/.test(v) ? v.replace('-', ' – ') : 'Zatvoreno');
+
+const redovi = [
+  { dan: 'Ponedjeljak – petak', vrijeme: radnoVrijeme.ponPet },
+  { dan: 'Subota', vrijeme: radnoVrijeme.subota },
+  { dan: 'Nedjelja', vrijeme: radnoVrijeme.nedjelja },
+];
+---
+
+<div data-radno={JSON.stringify(radnoVrijeme)} class={klasa}>
+  <div class="flex items-center gap-2.5">
+    <span
+      class="badge"
+      data-status-badge
+      data-state={status.otvorena ? 'open' : 'closed'}
+    >
+      <span class="badge-dot"></span>
+      <span data-status-label>{status.otvorena ? 'Otvoreno' : 'Zatvoreno'}</span>
+    </span>
+    <span data-status-text class="text-sm text-ink-500">{linija}</span>
+  </div>
+
+  <dl class="mt-4 divide-y divide-ink-100">
+    {
+      redovi.map((r) => (
+        <div class="flex items-center justify-between py-2.5 text-sm">
+          <dt class="text-ink-600">{r.dan}</dt>
+          <dd class="tabular-nums font-medium text-ink-900">{fmt(r.vrijeme)}</dd>
+        </div>
+      ))
+    }
+  </dl>
+</div>
+
+<script>
+  import '../lib/status-client';
+</script>

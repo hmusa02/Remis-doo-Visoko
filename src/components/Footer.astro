@@ -1,0 +1,75 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { firma } from '../data/firma';
+
+/**
+ * Podnožje. Svijetla podloga (logo je JPEG s bijelom pozadinom — ne ide na
+ * tamno dok ne stigne SVG). Sadrži sjedište firme (sjedište NIJE stanica).
+ */
+const godina = new Date().getFullYear();
+
+const linkovi = [
+  { label: 'Stanice', href: '/stanice' },
+  { label: 'Usluge', href: '/usluge' },
+  { label: 'Cjenovnik', href: '/cjenovnik' },
+  { label: 'Karijera', href: '/karijera' },
+  { label: 'Kontakt', href: '/kontakt' },
+];
+const telDigits = firma.telefon.replace(/[^\d+]/g, '');
+---
+
+<footer class="bg-ink-100 border-t border-ink-200 text-ink-600 mt-24">
+  <div class="wrap py-12 md:py-16 grid gap-10 md:grid-cols-3">
+    <div class="max-w-xs">
+      <Logo height={40} />
+      <p class="mt-4 text-sm leading-relaxed text-ink-500">
+        Tehnički pregled i registracija vozila u Federaciji BiH. Deset stanica,
+        jedan standard — pouzdano i tačno.
+      </p>
+    </div>
+
+    <div>
+      <h2 class="text-eyebrow uppercase text-ink-500 mb-4">Navigacija</h2>
+      <ul class="space-y-2.5 text-sm">
+        {
+          linkovi.map((l) => (
+            <li>
+              <a href={l.href} class="hover:text-brand-700 transition-colors">
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-eyebrow uppercase text-ink-500 mb-4">Sjedište</h2>
+      <address class="not-italic space-y-2.5 text-sm">
+        <p class="flex items-start gap-2.5">
+          <Icon name="building" size={16} class="text-ink-400 mt-0.5 shrink-0" />
+          <span>
+            {firma.naziv}<br />
+            {firma.adresa}, {firma.postanskiBroj} {firma.grad}
+          </span>
+        </p>
+        <a href={`tel:${telDigits}`} class="flex items-center gap-2.5 hover:text-brand-700 transition-colors">
+          <Icon name="phone" size={16} class="text-ink-400 shrink-0" />
+          <span class="tabular-nums">{firma.telefon}</span>
+        </a>
+        <a href={`mailto:${firma.email}`} class="flex items-center gap-2.5 hover:text-brand-700 transition-colors">
+          <Icon name="mail" size={16} class="text-ink-400 shrink-0" />
+          <span>{firma.email}</span>
+        </a>
+      </address>
+    </div>
+  </div>
+
+  <div class="border-t border-ink-200">
+    <div class="wrap py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-ink-500">
+      <p>© {godina} {firma.naziv}. Sva prava zadržana.</p>
+      <p>Tehnički pregled vozila · Federacija BiH</p>
+    </div>
+  </div>
+</footer>

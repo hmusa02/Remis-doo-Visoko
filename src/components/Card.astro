@@ -1,0 +1,13 @@
+---
+/** Osnovna kartica (bijela podloga, tanka linija, suptilna sjena). */
+interface Props {
+  hover?: boolean;
+  class?: string;
+}
+const { hover = false, class: klasa = '' } = Astro.props;
+const klase = ['card', hover && 'card--hover', klasa].filter(Boolean).join(' ');
+---
+
+<div class={klase}>
+  <slot />
+</div>

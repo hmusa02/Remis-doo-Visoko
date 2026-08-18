@@ -1,0 +1,17 @@
+---
+/**
+ * Statusni/oznaka badge. Varijante: open, closed, neutral, accent, navy.
+ * `dot` dodaje tačkicu (koristi se za semafor otvoreno/zatvoreno).
+ */
+interface Props {
+  variant?: 'open' | 'closed' | 'neutral' | 'accent' | 'brand';
+  dot?: boolean;
+  class?: string;
+}
+const { variant = 'neutral', dot = false, class: klasa = '' } = Astro.props;
+---
+
+<span class={`badge badge--${variant} ${klasa}`}>
+  {dot && <span class="badge-dot"></span>}
+  <slot />
+</span>

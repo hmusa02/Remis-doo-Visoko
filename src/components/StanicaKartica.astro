@@ -1,0 +1,86 @@
+---
+import Icon from './Icon.astro';
+import { statusStanice, type RadnoVrijeme } from '../lib/radno-vrijeme';
+
+/**
+ * Kartica stanice: naziv, grad, adresa, telefon + live status otvoreno/zatvoreno.
+ */
+interface Props {
+  naziv: string;
+  grad: string;
+  adresa: string;
+  telefon: string;
+  radnoVrijeme: RadnoVrijeme;
+  href?: string;
+}
+const { naziv, grad, adresa, telefon, radnoVrijeme, href } = Astro.props;
+
+const status = statusStanice(radnoVrijeme);
+const p = status.sljedecaPromjena;
+const linija = p
+  ? status.otvorena
+    ? `Zatvara ${p.dan} u ${p.vrijeme}`
+    : `Otvara ${p.dan} u ${p.vrijeme}`
+  : status.otvorena
+    ? 'Otvoreno'
+    : 'Zatvoreno';
+
+const telDigits = telefon.replace(/[^\d+]/g, '');
+---
+
+<article
+  data-radno={JSON.stringify(radnoVrijeme)}
+  class="card card--hover p-5 flex flex-col gap-4"
+>
+  <div class="flex items-start justify-between gap-3">
+    <div>
+      <h3 class="font-display font-bold text-lg text-ink-900 leading-tight">{naziv}</h3>
+      <p class="text-sm text-ink-500 mt-0.5">{grad}</p>
+    </div>
+    <span
+      class="badge shrink-0"
+      data-status-badge
+      data-state={status.otvorena ? 'open' : 'closed'}
+    >
+      <span class="badge-dot"></span>
+      <span data-status-label>{status.otvorena ? 'Otvoreno' : 'Zatvoreno'}</span>
+    </span>
+  </div>
+
+  <div class="space-y-2 text-sm">
+    <p class="flex items-start gap-2.5 text-ink-700">
+      <Icon name="map-pin" size={16} class="text-ink-400 mt-0.5 shrink-0" />
+      <span>{adresa}, {grad}</span>
+    </p>
+    {
+      telDigits && (
+        <a
+          href={`tel:${telDigits}`}
+          class="flex items-center gap-2.5 text-ink-700 hover:text-ink-900 transition-colors"
+        >
+          <Icon name="phone" size={16} class="text-ink-400 shrink-0" />
+          <span class="tabular-nums">{telefon}</span>
+        </a>
+      )
+    }
+  </div>
+
+  <div class="mt-auto flex items-center justify-between border-t border-ink-100 pt-3">
+    <span data-status-text class="text-xs text-ink-500">{linija}</span>
+    {
+      href && (
+        <a
+          href={href}
+          class="inline-flex items-center gap-1 text-sm font-semibold text-ink-800 hover:text-accent-strong transition-colors"
+        >
+          Detalji
+          <Icon name="chevron-right" size={15} />
+        </a>
+      )
+    }
+  </div>
+</article>
+
+<script>
+  import '../lib/status-client';
+</script>

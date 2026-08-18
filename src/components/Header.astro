@@ -1,0 +1,101 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import Button from './Button.astro';
+
+/** Zaglavlje s navigacijom i mobilnim menijem (bez skladištenja). */
+interface Props {
+  active?: string;
+}
+const { active } = Astro.props;
+
+const nav = [
+  { label: 'Početna', href: '/' },
+  { label: 'Stanice', href: '/stanice' },
+  { label: 'Usluge', href: '/usluge' },
+  { label: 'Cjenovnik', href: '/cjenovnik' },
+  { label: 'Karijera', href: '/karijera' },
+  { label: 'Kontakt', href: '/kontakt' },
+];
+---
+
+<header class="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-ink-200">
+  <div class="wrap flex items-center justify-between h-16">
+    <a href="/" aria-label="REMIS — početna">
+      <Logo />
+    </a>
+
+    <nav class="hidden md:flex items-center gap-0.5" aria-label="Glavna navigacija">
+      {
+        nav.map((n) => (
+          <a
+            href={n.href}
+            class="nav-link"
+            aria-current={active === n.href ? 'page' : undefined}
+          >
+            {n.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="hidden md:block">
+      <Button href="/kontakt" size="sm">Zakaži pregled</Button>
+    </div>
+
+    <button
+      type="button"
+      class="md:hidden inline-flex items-center justify-center w-10 h-10 -mr-2 rounded-md text-ink-900 hover:bg-ink-100"
+      aria-label="Otvori meni"
+      aria-expanded="false"
+      aria-controls="mobilni-meni"
+      data-menu-toggle
+    >
+      <Icon name="menu" size={24} class="block" data-menu-icon="open" />
+      <Icon name="close" size={24} class="hidden" data-menu-icon="close" />
+    </button>
+  </div>
+
+  <div id="mobilni-meni" class="md:hidden hidden border-t border-ink-200 bg-white" data-menu-panel>
+    <nav class="wrap py-3 flex flex-col" aria-label="Glavna navigacija (mobilna)">
+      {
+        nav.map((n) => (
+          <a
+            href={n.href}
+            class="mobilni-link"
+            aria-current={active === n.href ? 'page' : undefined}
+          >
+            {n.label}
+          </a>
+        ))
+      }
+      <Button href="/kontakt" block class="mt-4">Zakaži pregled</Button>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const panel = document.querySelector<HTMLElement>('[data-menu-panel]');
+  const ikoneOpen = document.querySelector<HTMLElement>('[data-menu-icon="open"]');
+  const ikonaClose = document.querySelector<HTMLElement>('[data-menu-icon="close"]');
+
+  function postavi(otvoren: boolean): void {
+    if (!panel || !toggle) return;
+    panel.classList.toggle('hidden', !otvoren);
+    toggle.setAttribute('aria-expanded', String(otvoren));
+    toggle.setAttribute('aria-label', otvoren ? 'Zatvori meni' : 'Otvori meni');
+    ikoneOpen?.classList.toggle('hidden', otvoren);
+    ikonaClose?.classList.toggle('hidden', !otvoren);
+  }
+
+  toggle?.addEventListener('click', () => {
+    postavi(panel?.classList.contains('hidden') ?? true);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') postavi(false);
+  });
+  window.matchMedia('(min-width: 768px)').addEventListener('change', (e) => {
+    if (e.matches) postavi(false);
+  });
+</script>

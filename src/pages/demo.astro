@@ -1,0 +1,239 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../layouts/PageLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import Badge from '../components/Badge.astro';
+import Table from '../components/Table.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import EmptyState from '../components/EmptyState.astro';
+import StanicaKartica from '../components/StanicaKartica.astro';
+import RadnoVrijeme from '../components/RadnoVrijeme.astro';
+import { cjenovnik } from '../data/cjenovnik';
+
+const formatKM = (n: number): string => `${n.toFixed(2).replace('.', ',')} KM`;
+
+// Reprezentativan isječak cjenovnika (M1 kao tri reda + par ostalih)
+const cjenovnikDemo = cjenovnik
+  .filter((s) => ['L1-L2', 'M1', 'N1', 'O1'].includes(s.kod))
+  .map((s) => ({
+    vozilo: s.varijanta ? `${s.naziv} — ${s.varijanta}` : s.naziv,
+    vanredni: formatKM(s.vanredni),
+    redovni: formatKM(s.redovni),
+  }));
+
+// Dvije stvarne stanice iz content collectiona
+const stanice = (await getCollection('stanice'))
+  .sort((a, b) => a.data.redoslijed - b.data.redoslijed)
+  .slice(0, 2);
+
+const inkShades = ['50', '100', '200', '300', '400', '500', '600', '700', '900'];
+const brandShades = ['100', '200', '300', '500', '700', '900'];
+
+const brojevi = [
+  { broj: '1990', opis: 'Godina osnivanja' },
+  { broj: '10', opis: 'Stanica u FBiH' },
+  { broj: '55', opis: 'Zaposlenih' },
+];
+---
+
+<PageLayout title="Dizajn sistem — REMIS" description="Pregled komponenti i tokena.">
+  <!-- Uvod -->
+  <section class="wrap pt-10 pb-4">
+    <Breadcrumbs items={[{ label: 'Početna', href: '/' }, { label: 'Dizajn sistem' }]} />
+    <div class="mt-6 max-w-3xl">
+      <p class="text-eyebrow uppercase text-accent-strong mb-3">Faza 3 · Interni pregled</p>
+      <h1 class="text-display text-ink-900">Dizajn sistem i komponente</h1>
+      <p class="mt-4 text-lg text-ink-600 leading-relaxed">
+        Institucionalno-tehnički vizuelni jezik: topla bijela i grafitna baza,
+        bordo kao jedini akcent (izvučen iz logotipa), snažna tipografija i
+        tabele koje se savršeno čitaju i na telefonu. Ova stranica služi samo za
+        pregled prije izrade stvarnih stranica.
+      </p>
+    </div>
+  </section>
+
+  <div class="wrap space-y-20 py-12">
+    <!-- BOJE -->
+    <section>
+      <SectionHeading
+        eyebrow="Tokeni"
+        title="Paleta"
+        description="Sve boje su tokeni u Tailwind configu. Akcent je jedna varijabla (--color-accent) — promijeni je i cijeli sajt se prilagodi."
+      />
+      <div class="mt-8 grid gap-8 sm:grid-cols-2">
+        <div>
+          <p class="text-sm font-semibold text-ink-700 mb-3">Ink — topli neutrali (baza)</p>
+          <div class="flex flex-wrap gap-1.5">
+            {inkShades.map((s) => (
+              <div class="text-center">
+                <div class="w-12 h-12 rounded-md border border-ink-200" style={`background: var(--color-ink-${s})`}></div>
+                <span class="text-[10px] text-ink-400 tabular-nums">{s}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div>
+          <p class="text-sm font-semibold text-ink-700 mb-3">Bordo — brend (akcent)</p>
+          <div class="flex flex-wrap gap-1.5">
+            {brandShades.map((s) => (
+              <div class="text-center">
+                <div class="w-12 h-12 rounded-md border border-ink-200" style={`background: var(--color-brand-${s})`}></div>
+                <span class="text-[10px] text-ink-400 tabular-nums">{s}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div class="mt-8 flex flex-wrap gap-6">
+        <div>
+          <p class="text-sm font-semibold text-ink-700 mb-3">Akcent</p>
+          <div class="flex gap-1.5">
+            <div class="text-center"><div class="w-12 h-12 rounded-md bg-accent-soft"></div><span class="text-[10px] text-ink-400">soft</span></div>
+            <div class="text-center"><div class="w-12 h-12 rounded-md bg-accent"></div><span class="text-[10px] text-ink-400">base</span></div>
+            <div class="text-center"><div class="w-12 h-12 rounded-md bg-accent-strong"></div><span class="text-[10px] text-ink-400">strong</span></div>
+          </div>
+        </div>
+        <div>
+          <p class="text-sm font-semibold text-ink-700 mb-3">Status</p>
+          <div class="flex gap-1.5">
+            <div class="text-center"><div class="w-12 h-12 rounded-md" style="background: var(--color-open)"></div><span class="text-[10px] text-ink-400">otvoreno</span></div>
+            <div class="text-center"><div class="w-12 h-12 rounded-md" style="background: var(--color-closed)"></div><span class="text-[10px] text-ink-400">zatvoreno</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIPOGRAFIJA -->
+    <section>
+      <SectionHeading
+        eyebrow="Tokeni"
+        title="Tipografija"
+        description="Sistemski font (bez skidanja s mreže). Naslovi su veliki i samouvjereni; brojevi koriste tabularne cifre da se kolone poravnaju."
+      />
+      <div class="mt-8 space-y-5">
+        <div class="border-l-2 border-accent pl-4">
+          <p class="text-eyebrow uppercase text-accent-strong">Eyebrow / nadnaslov</p>
+          <p class="text-display text-ink-900 mt-1">Display naslov</p>
+        </div>
+        <p class="text-title text-ink-900">Title — naslov sekcije</p>
+        <p class="text-lg text-ink-700 max-w-2xl leading-relaxed">
+          Uvodni pasus (lead). Nešto veći tekst za prvi red informacija na stranici.
+        </p>
+        <p class="text-base text-ink-600 max-w-2xl leading-relaxed">
+          Tijelo teksta. Optimizovano za čitljivost — dovoljno kontrasta, jasan razmak redova.
+        </p>
+      </div>
+
+      <div class="mt-10 grid grid-cols-3 gap-4 max-w-lg">
+        {brojevi.map((b) => (
+          <div>
+            <p class="text-4xl font-extrabold tabular-nums text-ink-900">{b.broj}</p>
+            <p class="text-xs text-ink-500 mt-1">{b.opis}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- DUGMAD -->
+    <section>
+      <SectionHeading eyebrow="Komponenta" title="Dugmad" description="Primarno (bordo), sekundarno (outline), meki akcent i ghost. Renderira se kao <a> ili <button>." />
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <Button variant="primary">Primarno</Button>
+        <Button variant="secondary">Sekundarno</Button>
+        <Button variant="accent">Akcent</Button>
+        <Button variant="ghost">Ghost</Button>
+      </div>
+      <div class="mt-4 flex flex-wrap items-center gap-3">
+        <Button size="sm">Malo</Button>
+        <Button size="md">Srednje</Button>
+        <Button size="lg">Veliko</Button>
+      </div>
+    </section>
+
+    <!-- BADGE -->
+    <section>
+      <SectionHeading eyebrow="Komponenta" title="Badge / status" description="Semafor otvoreno (zeleno) / zatvoreno (sivo), plus neutralne i akcent oznake." />
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <Badge variant="open" dot>Otvoreno</Badge>
+        <Badge variant="closed" dot>Zatvoreno</Badge>
+        <Badge variant="neutral">Neutralno</Badge>
+        <Badge variant="accent">Akcent</Badge>
+        <Badge variant="brand">Brand</Badge>
+      </div>
+    </section>
+
+    <!-- CARD -->
+    <section>
+      <SectionHeading eyebrow="Komponenta" title="Kartica" description="Osnovni kontejner. Opcioni hover za klikabilne kartice." />
+      <div class="mt-8 grid gap-5 sm:grid-cols-2 max-w-3xl">
+        <Card class="p-6">
+          <h3 class="font-display font-bold text-lg text-ink-900">Statična kartica</h3>
+          <p class="mt-2 text-sm text-ink-600">Tanka linija, suptilna sjena, blagi radijus.</p>
+        </Card>
+        <Card hover class="p-6">
+          <h3 class="font-display font-bold text-lg text-ink-900">Hover kartica</h3>
+          <p class="mt-2 text-sm text-ink-600">Podigne se na hover — za linkovane blokove.</p>
+        </Card>
+      </div>
+    </section>
+
+    <!-- TABELA -->
+    <section>
+      <SectionHeading eyebrow="Komponenta" title="Tabela (cjenovnik)" description="Na telefonu je svaki red blok „labela: vrijednost“, na širem ekranu klasična tabela. M1 je prikazan kao tri zasebna reda (bez R.K. / benzin / dizel)." />
+      <div class="mt-8 max-w-3xl">
+        <Table
+          caption="Isječak cjenovnika"
+          columns={[
+            { key: 'vozilo', label: 'Vozilo' },
+            { key: 'vanredni', label: 'Vanredni', numeric: true },
+            { key: 'redovni', label: 'Redovni', numeric: true },
+          ]}
+          rows={cjenovnikDemo}
+        />
+      </div>
+    </section>
+
+    <!-- STANICA KARTICA -->
+    <section>
+      <SectionHeading eyebrow="Komponenta" title="Kartica stanice" description="Naziv, grad, adresa, telefon i live status. Status se računa u pregledniku (osvježava se svake minute)." />
+      <div class="mt-8 grid gap-5 sm:grid-cols-2 max-w-3xl">
+        {stanice.map((s) => (
+          <StanicaKartica
+            naziv={s.data.naziv}
+            grad={s.data.grad}
+            adresa={s.data.adresa}
+            telefon={s.data.telefon}
+            radnoVrijeme={s.data.radnoVrijeme}
+            href={`/stanice/${s.data.slug}`}
+          />
+        ))}
+      </div>
+    </section>
+
+    <!-- RADNO VRIJEME -->
+    <section>
+      <SectionHeading eyebrow="Komponenta" title="Radno vrijeme" description="Sedmični raspored s live statusom i sljedećom promjenom (koristi helper iz faze 2, zona Europe/Sarajevo)." />
+      <div class="mt-8 max-w-sm">
+        <Card class="p-6">
+          <RadnoVrijeme radnoVrijeme={stanice[0]!.data.radnoVrijeme} />
+        </Card>
+      </div>
+    </section>
+
+    <!-- EMPTY STATE -->
+    <section>
+      <SectionHeading eyebrow="Komponenta" title="Prazno stanje" description="Kad nema podataka — npr. nema aktivnih oglasa za posao." />
+      <div class="mt-8 max-w-xl">
+        <EmptyState
+          icon="inbox"
+          title="Trenutno nema otvorenih pozicija"
+          message="Nema aktivnih oglasa. Provjerite ponovo kasnije ili nam pošaljite otvorenu prijavu."
+        >
+          <Button href="/kontakt" variant="secondary" size="sm">Pošalji prijavu</Button>
+        </EmptyState>
+      </div>
+    </section>
+  </div>
+</PageLayout>

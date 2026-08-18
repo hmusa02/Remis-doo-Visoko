@@ -1,0 +1,29 @@
+---
+import { Image } from 'astro:assets';
+// JEDINO mjesto gdje se mijenja izvorni fajl logotipa.
+// Kad stigne vektor (SVG), zamijeni samo ovaj import.
+import logoSrc from '../assets/remis-logo.jpeg';
+
+/**
+ * Logo firme. Učitava se kroz Astro image pipeline (optimizacija + eksplicitni
+ * width/height → nema layout shifta). Fajl je JPEG s bijelom pozadinom, pa
+ * logo mora stajati na svijetloj podlozi.
+ */
+interface Props {
+  /** Visina prikaza u px (širina se računa iz omjera). */
+  height?: number;
+  class?: string;
+}
+const { height = 34, class: klasa = '' } = Astro.props;
+const width = Math.round(height * (logoSrc.width / logoSrc.height));
+---
+
+<Image
+  src={logoSrc}
+  alt="REMIS d.o.o. Visoko"
+  width={width}
+  height={height}
+  densities={[1, 2]}
+  loading="eager"
+  class={`block w-auto ${klasa}`}
+/>

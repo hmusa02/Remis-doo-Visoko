@@ -1,0 +1,50 @@
+---
+/**
+ * Responzivna tabela. Na mobitelu se svaki red prikazuje kao blok
+ * "labela: vrijednost" (vidi .rtable u global.css), a od 768px kao klasična
+ * tabela — bitno jer je cjenovnik duga tabela koja se najviše gleda s telefona.
+ */
+interface Kolona {
+  key: string;
+  label: string;
+  /** Poravnaj desno i koristi tabularne brojeve (za cijene i sl.). */
+  numeric?: boolean;
+}
+interface Props {
+  columns: Kolona[];
+  rows: Array<Record<string, string | number>>;
+  caption?: string;
+  class?: string;
+}
+const { columns, rows, caption, class: klasa = '' } = Astro.props;
+---
+
+<div class={`overflow-x-auto ${klasa}`}>
+  <table class="rtable">
+    {caption && <caption class="sr-only">{caption}</caption>}
+    <thead>
+      <tr>
+        {
+          columns.map((c) => (
+            <th scope="col" class={c.numeric ? 'rtable-num' : ''}>
+              {c.label}
+            </th>
+          ))
+        }
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((row) => (
+          <tr>
+            {columns.map((c) => (
+              <td data-label={c.label} class={c.numeric ? 'rtable-num' : ''}>
+                {row[c.key]}
+              </td>
+            ))}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

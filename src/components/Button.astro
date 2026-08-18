@@ -1,0 +1,44 @@
+---
+/**
+ * Dugme. Renderira <a> ako je zadan `href`, inače <button>.
+ * Varijante: primary (navy), secondary (outline), accent, ghost.
+ */
+interface Props {
+  variant?: 'primary' | 'secondary' | 'accent' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  block?: boolean;
+  class?: string;
+}
+const {
+  variant = 'primary',
+  size = 'md',
+  href,
+  type = 'button',
+  block = false,
+  class: klasa = '',
+} = Astro.props;
+
+const klase = [
+  'btn',
+  `btn--${variant}`,
+  size !== 'md' && `btn--${size}`,
+  block && 'btn--block',
+  klasa,
+]
+  .filter(Boolean)
+  .join(' ');
+---
+
+{
+  href ? (
+    <a class={klase} href={href}>
+      <slot />
+    </a>
+  ) : (
+    <button class={klase} type={type}>
+      <slot />
+    </button>
+  )
+}
