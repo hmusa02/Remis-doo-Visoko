@@ -9,4 +9,8 @@ export const firma = {
   grad: 'Visoko',
   telefon: '032/730-300',
   email: 'info@remis.ba',
+  /** Godina osnivanja. */
+  osnovana: 1990,
+  /** Približan broj zaposlenih. */
+  zaposleni: 55,
 } as const;

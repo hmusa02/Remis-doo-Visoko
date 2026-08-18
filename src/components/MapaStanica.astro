@@ -12,8 +12,10 @@ interface Props {
   class?: string;
   /** Ako true, klik na marker ističe karticu `[data-stanica]`. */
   istakniKartice?: boolean;
+  /** Ako true, marker dobija popup s nazivom i linkom na stanicu. */
+  popup?: boolean;
 }
-const { markeri, zoom = 14, class: klasa = '', istakniKartice = false } = Astro.props;
+const { markeri, zoom = 14, class: klasa = '', istakniKartice = false, popup = false } = Astro.props;
 ---
 
 <div
@@ -21,6 +23,7 @@ const { markeri, zoom = 14, class: klasa = '', istakniKartice = false } = Astro.
   data-mapa
   data-zoom={zoom}
   data-istakni={istakniKartice ? '1' : ''}
+  data-popup={popup ? '1' : ''}
   data-markeri={JSON.stringify(markeri)}
   role="region"
   aria-label="Mapa lokacija"
@@ -52,6 +55,7 @@ const { markeri, zoom = 14, class: klasa = '', istakniKartice = false } = Astro.
 
     const zoom = Number(el.dataset.zoom) || 14;
     const istakniKartice = el.dataset.istakni === '1';
+    const popup = el.dataset.popup === '1';
 
     let rezultat: MapaRezultat | null = null;
     const obs = new IntersectionObserver(
@@ -61,6 +65,9 @@ const { markeri, zoom = 14, class: klasa = '', istakniKartice = false } = Astro.
         inicijalizirajMapu(el, markeri, {
           zoom,
           onMarkerClick: istakniKartice ? istakni : undefined,
+          popupHtml: popup
+            ? (m) => `<strong>${m.naziv}</strong><br><a href="/stanice/${m.slug}">Detalji →</a>`
+            : undefined,
         }).then((r) => {
           rezultat = r;
         });

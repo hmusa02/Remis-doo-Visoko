@@ -1,0 +1,23 @@
+---
+import Icon from './Icon.astro';
+
+/**
+ * Placeholder sekcija za certifikate i ovlaštenja — dok ne stignu pravi
+ * dokumenti/logotipi. Lako se zamijeni stvarnim sadržajem.
+ */
+const brojMjesta = 4;
+---
+
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+  {
+    Array.from({ length: brojMjesta }).map(() => (
+      <div class="card p-6 flex flex-col items-center justify-center gap-2 text-center aspect-[4/3]">
+        <Icon name="check" size={24} class="text-ink-300" />
+        <span class="text-xs text-ink-400">Certifikat uskoro</span>
+      </div>
+    ))
+  }
+</div>
+<p class="mt-3 text-sm text-ink-500">
+  Ovlaštenja i certifikati bit će objavljeni ovdje po dostavljanju.
+</p>

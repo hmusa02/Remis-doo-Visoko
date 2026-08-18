@@ -35,6 +35,8 @@ export interface MapaRezultat {
 export interface MapaOpcije {
   zoom?: number;
   onMarkerClick?: (slug: string) => void;
+  /** Ako je zadano, marker dobija popup s ovim HTML-om. */
+  popupHtml?: (m: MarkerPodatak) => string;
 }
 
 /** Inicijalizira mapu s markerima. Vraća `null` ako nema markera. */
@@ -69,6 +71,11 @@ export async function inicijalizirajMapu(
       .setLngLat([m.lng, m.lat])
       .addTo(map);
 
+    if (opcije.popupHtml) {
+      marker.setPopup(
+        new maplibre.Popup({ offset: 16, closeButton: false }).setHTML(opcije.popupHtml(m)),
+      );
+    }
     if (opcije.onMarkerClick) {
       el.addEventListener('click', () => opcije.onMarkerClick!(m.slug));
     }

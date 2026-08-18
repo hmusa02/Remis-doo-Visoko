@@ -1,0 +1,100 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Certifikati from '../components/Certifikati.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import { firma } from '../data/firma';
+
+const brojevi = [
+  { broj: String(firma.osnovana), opis: 'Godina osnivanja' },
+  { broj: '10', opis: 'Stanica u FBiH' },
+  { broj: `${firma.zaposleni}`, opis: 'Zaposlenih' },
+];
+---
+
+<PageLayout
+  title="O nama — REMIS d.o.o. Visoko"
+  description="REMIS d.o.o. Visoko posluje od 1990. godine. Deset stanica tehničkog pregleda u Federaciji BiH, sjedište u Visokom."
+  active="/o-nama"
+>
+  <section class="wrap pt-8">
+    <Breadcrumbs items={[{ label: 'Početna', href: '/' }, { label: 'O nama' }]} />
+    <div class="mt-6 max-w-3xl">
+      <SectionHeading
+        as="h1"
+        eyebrow="O firmi"
+        title="REMIS d.o.o. Visoko"
+        description="Tehnički pregled i registracija vozila u Federaciji BiH."
+      />
+    </div>
+  </section>
+
+  <section class="wrap mt-8 max-w-3xl space-y-4 text-ink-700 leading-relaxed">
+    <p>
+      REMIS d.o.o. Visoko posluje od 1990. godine. Sjedište firme je u Visokom, a
+      djelatnost obavljamo kroz mrežu od deset stanica tehničkog pregleda
+      raspoređenih u Federaciji BiH.
+    </p>
+    <p>
+      Bavimo se tehničkim pregledom vozila svih kategorija, kao i registracijom i
+      osiguranjem. Posao obavlja oko {firma.zaposleni} zaposlenih. Radimo po
+      važećim propisima i standardima struke, s ciljem da postupak za naše
+      korisnike bude jednostavan, tačan i obavljen na jednom mjestu.
+    </p>
+  </section>
+
+  <!-- Brojevi -->
+  <section class="bg-ink-50 border-y border-ink-200 my-12">
+    <div class="wrap py-10 grid grid-cols-3 gap-6 text-center">
+      {
+        brojevi.map((b) => (
+          <div>
+            <p class="text-4xl md:text-5xl font-extrabold tabular-nums text-brand-700">{b.broj}</p>
+            <p class="text-sm text-ink-600 mt-1">{b.opis}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Certifikati -->
+  <section class="wrap py-4">
+    <SectionHeading eyebrow="Povjerenje" title="Certifikati i ovlaštenja" />
+    <div class="mt-8">
+      <Certifikati />
+    </div>
+  </section>
+
+  <!-- Sjedište + CTA -->
+  <section class="wrap py-10">
+    <div class="grid gap-6 md:grid-cols-2">
+      <div class="card p-6">
+        <h2 class="text-eyebrow uppercase text-ink-500 mb-4">Sjedište</h2>
+        <address class="not-italic space-y-2.5 text-ink-700 text-sm">
+          <p class="flex items-start gap-2.5">
+            <Icon name="building" size={16} class="text-ink-400 mt-0.5 shrink-0" />
+            <span>{firma.naziv}<br />{firma.adresa}, {firma.postanskiBroj} {firma.grad}</span>
+          </p>
+          <a href={`tel:${firma.telefon.replace(/[^\d+]/g, '')}`} class="flex items-center gap-2.5 hover:text-brand-700 transition-colors">
+            <Icon name="phone" size={16} class="text-ink-400 shrink-0" />
+            <span class="tabular-nums">{firma.telefon}</span>
+          </a>
+          <a href={`mailto:${firma.email}`} class="flex items-center gap-2.5 hover:text-brand-700 transition-colors">
+            <Icon name="mail" size={16} class="text-ink-400 shrink-0" />
+            <span>{firma.email}</span>
+          </a>
+        </address>
+      </div>
+      <div class="card p-6 flex flex-col justify-center">
+        <h2 class="font-display font-bold text-lg text-ink-900">Trebate tehnički pregled?</h2>
+        <p class="mt-2 text-sm text-ink-600">Pronađite najbližu stanicu i provjerite radno vrijeme.</p>
+        <div class="mt-4 flex flex-wrap gap-3">
+          <Button href="/stanice">Sve stanice</Button>
+          <Button href="/kontakt" variant="secondary">Kontakt</Button>
+        </div>
+      </div>
+    </div>
+  </section>
+</PageLayout>

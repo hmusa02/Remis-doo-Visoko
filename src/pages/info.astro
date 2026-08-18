@@ -1,0 +1,119 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Card from '../components/Card.astro';
+import Icon from '../components/Icon.astro';
+
+// FAQ — pitanja i odgovori (koriste se i za prikaz i za JSON-LD).
+const faq = [
+  {
+    pitanje: 'Koliko traje tehnički pregled?',
+    odgovor:
+      'Za putnička vozila pregled obično traje 15 do 30 minuta, ovisno o gužvi na stanici. Za teretna vozila i autobuse potrebno je nešto više vremena.',
+  },
+  {
+    pitanje: 'Mogu li registraciju obaviti na istom mjestu?',
+    odgovor:
+      'Da. Na našim stanicama možete obaviti tehnički pregled, osiguranje i registraciju vozila — sve na jednom mjestu, bez odlaska na više adresa.',
+  },
+  {
+    pitanje: 'Šta ako vozilo ne prođe tehnički pregled?',
+    odgovor:
+      'Dobit ćete nalaz s nedostacima koje treba otkloniti. Nakon popravke vozilo donosite na ponovni pregled. Ako ga obavite u propisanom roku, provjerava se samo ono što nije bilo ispravno.',
+  },
+  {
+    pitanje: 'Trebam li zakazati termin?',
+    odgovor:
+      'Zakazivanje nije obavezno — možete doći u toku radnog vremena. Ako želite izbjeći gužvu, nazovite stanicu i provjerite najbolje vrijeme za dolazak.',
+  },
+  {
+    pitanje: 'Koje dokumente da ponesem?',
+    odgovor:
+      'Za tehnički pregled ponesite saobraćajnu dozvolu (potvrdu o registraciji) i vozilo. Za registraciju su potrebni i dokazi o vlasništvu, osiguranju i plaćenim obavezama. Za tačan spisak u vašem slučaju slobodno pitajte osoblje stanice.',
+  },
+  {
+    pitanje: 'Radite li subotom?',
+    odgovor:
+      'Većina stanica radi i subotom u prijepodnevnim satima. Tačno radno vrijeme svake stanice provjerite na njenoj stranici.',
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({
+    '@type': 'Question',
+    name: f.pitanje,
+    acceptedAnswer: { '@type': 'Answer', text: f.odgovor },
+  })),
+};
+
+const vodic = [
+  {
+    naslov: 'Šta je potrebno za registraciju vozila',
+    tekst:
+      'Za registraciju je potrebno da vozilo prođe tehnički pregled, da imate valjano osiguranje od autoodgovornosti i da su izmirene propisane obaveze. Kod nas sve to možete obaviti na jednom mjestu — nakon pregleda sređujemo osiguranje i registracijske oznake.',
+  },
+  {
+    naslov: 'Koliko često se radi tehnički pregled',
+    tekst:
+      'Tehnički pregled se za većinu vozila obavlja jednom godišnje, prilikom produženja registracije. Pojedine kategorije vozila (npr. ona u privrednoj upotrebi) podliježu češćim, šestomjesečnim pregledima.',
+  },
+  {
+    naslov: 'Šta ako vozilo ne prođe',
+    tekst:
+      'Ako se utvrde nedostaci, dobijate nalaz s tačnim spiskom onoga što treba popraviti. Nakon otklanjanja kvarova vozilo donosite na ponovni pregled. Ukoliko to uradite u propisanom roku, ponovni pregled je jednostavniji i provjerava se samo ono što nije bilo ispravno.',
+  },
+];
+---
+
+<PageLayout
+  title="Vodič i česta pitanja — REMIS"
+  description="Sve što trebate znati o tehničkom pregledu i registraciji vozila: potrebni dokumenti, koliko često se radi pregled i šta ako vozilo ne prođe."
+  active="/info"
+>
+  <section class="wrap pt-8">
+    <Breadcrumbs items={[{ label: 'Početna', href: '/' }, { label: 'Vodič' }]} />
+    <div class="mt-6">
+      <SectionHeading
+        as="h1"
+        eyebrow="Vodič"
+        title="Tehnički pregled i registracija"
+        description="Kratak, jednostavan vodič kroz najvažnije. Za sve nejasno, osoblje na stanici rado pomaže."
+      />
+    </div>
+  </section>
+
+  <!-- Vodič -->
+  <section class="wrap mt-8 grid gap-5 md:grid-cols-3">
+    {
+      vodic.map((v) => (
+        <Card class="p-6">
+          <h2 class="font-display font-bold text-lg text-ink-900">{v.naslov}</h2>
+          <p class="mt-2 text-sm text-ink-600 leading-relaxed">{v.tekst}</p>
+        </Card>
+      ))
+    }
+  </section>
+
+  <!-- FAQ (accordion preko <details>, radi bez JS-a) -->
+  <section class="wrap mt-14 max-w-3xl">
+    <SectionHeading eyebrow="Česta pitanja" title="Pitanja i odgovori" />
+    <div class="mt-6 divide-y divide-ink-200 border-y border-ink-200">
+      {
+        faq.map((f) => (
+          <details class="faq">
+            <summary class="faq-summary">
+              <span>{f.pitanje}</span>
+              <Icon name="chevron-down" size={20} class="faq-ikona text-ink-400 shrink-0" />
+            </summary>
+            <p class="pb-4 text-ink-600 leading-relaxed">{f.odgovor}</p>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+</PageLayout>

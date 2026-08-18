@@ -1,7 +1,233 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import PageLayout from '../layouts/PageLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Icon from '../components/Icon.astro';
+import Certifikati from '../components/Certifikati.astro';
+import { firma } from '../data/firma';
+import type { MarkerPodatak } from '../lib/mapa';
+
+const stanice = (await getCollection('stanice')).sort(
+  (a, b) => a.data.redoslijed - b.data.redoslijed,
+);
+const usluge = (await getCollection('usluge')).sort(
+  (a, b) => a.data.redoslijed - b.data.redoslijed,
+);
+
+const gradovi = [...new Set(stanice.map((s) => s.data.grad))].sort((a, b) =>
+  a.localeCompare(b, 'bs'),
+);
+
+const markeri: MarkerPodatak[] = stanice.map((s) => ({
+  slug: s.data.slug,
+  naziv: s.data.naziv,
+  lng: s.data.lng,
+  lat: s.data.lat,
+}));
+
+const brzi = [
+  { naziv: 'Cjenovnik', opis: 'Cijene po kategorijama vozila', href: '/cjenovnik', icon: 'clipboard-check' as const },
+  { naziv: 'Potrebni dokumenti', opis: 'Šta ponijeti na pregled', href: '/info', icon: 'check' as const },
+  { naziv: 'Kontakt', opis: 'Pozovite ili nam pišite', href: '/kontakt', icon: 'phone' as const },
+];
+
+const brojevi = [
+  { broj: '10', opis: 'Stanica u Federaciji BiH' },
+  { broj: String(firma.osnovana), opis: 'Godina od osnivanja' },
+  { broj: `${firma.zaposleni}`, opis: 'Zaposlenih' },
+];
 ---
 
-<BaseLayout title="REMIS">
-  REMIS
-</BaseLayout>
+<PageLayout
+  title="REMIS — tehnički pregled vozila u Federaciji BiH"
+  description="REMIS d.o.o. Visoko — tehnički pregled i registracija vozila na 10 stanica u FBiH. Pronađite najbližu stanicu, provjerite radno vrijeme i cjenovnik."
+  active="/"
+>
+  <!-- HERO = alat: pronađi najbližu stanicu -->
+  <section class="bg-ink-50 border-b border-ink-200">
+    <div class="wrap py-10 md:py-14 grid gap-8 lg:grid-cols-2 lg:items-center">
+      <div>
+        <div class="flex items-center gap-2 text-eyebrow uppercase text-brand-700">
+          <span class="w-6 h-px bg-brand-700"></span>
+          Tehnički pregled vozila
+        </div>
+        <h1 class="text-display text-ink-900 mt-3">Pronađite najbližu stanicu</h1>
+        <p class="mt-4 text-lg text-ink-600 leading-relaxed max-w-xl">
+          Deset REMIS stanica u Federaciji BiH. Upišite grad da vidite lokaciju
+          na mapi, ili otvorite spisak svih stanica.
+        </p>
+
+        <form class="mt-6 flex flex-col sm:flex-row gap-3 sm:items-end" data-pronadji>
+          <div class="flex-1">
+            <label for="grad" class="block text-xs font-semibold uppercase tracking-wide text-ink-500 mb-1.5">Grad</label>
+            <input
+              id="grad"
+              name="grad"
+              type="text"
+              list="gradovi-lista"
+              autocomplete="off"
+              placeholder="Npr. Sarajevo"
+              class="odabir"
+            />
+            <datalist id="gradovi-lista">
+              {gradovi.map((g) => <option value={g}></option>)}
+            </datalist>
+          </div>
+          <button type="submit" class="btn btn--primary">
+            <Icon name="map-pin" size={18} />
+            Pronađi
+          </button>
+        </form>
+        <p class="mt-2 text-sm text-ink-500" data-rezultat aria-live="polite"></p>
+        <a href="/stanice" class="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-brand-700">
+          Sve stanice
+          <Icon name="arrow-right" size={16} />
+        </a>
+      </div>
+
+      <div
+        class="mapa h-80 md:h-[420px]"
+        data-home-mapa
+        data-markeri={JSON.stringify(markeri)}
+        role="region"
+        aria-label="Mapa svih stanica"
+      >
+        <noscript>
+          <div class="mapa-fallback">Za prikaz mape potreban je JavaScript. <a href="/stanice" class="underline">Spisak stanica</a>.</div>
+        </noscript>
+      </div>
+    </div>
+  </section>
+
+  <!-- Brzi linkovi -->
+  <section class="wrap py-12">
+    <div class="grid gap-4 sm:grid-cols-3">
+      {
+        brzi.map((b) => (
+          <a href={b.href} class="card card--hover p-5 flex items-center gap-4">
+            <span class="w-11 h-11 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center shrink-0">
+              <Icon name={b.icon} size={20} />
+            </span>
+            <span>
+              <span class="block font-semibold text-ink-900">{b.naziv}</span>
+              <span class="block text-sm text-ink-600 mt-0.5">{b.opis}</span>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Usluge -->
+  <section class="wrap py-6">
+    <SectionHeading eyebrow="Šta radimo" title="Naše usluge" description="Tehnički pregled svih kategorija vozila, registracija i osiguranje — na jednom mjestu." />
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        usluge.map((u) => (
+          <a href={`/usluge/${u.data.slug}`} class="card card--hover p-5 flex items-start gap-3">
+            <span class="mt-0.5 text-brand-700 shrink-0"><Icon name="check" size={18} /></span>
+            <span>
+              <span class="block font-semibold text-ink-900">{u.data.naziv}</span>
+              <span class="block text-sm text-ink-600 mt-1">{u.data.kratkiOpis}</span>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Brojevi -->
+  <section class="bg-ink-50 border-y border-ink-200 my-12">
+    <div class="wrap py-10 grid grid-cols-3 gap-6 text-center">
+      {
+        brojevi.map((b) => (
+          <div>
+            <p class="text-4xl md:text-5xl font-extrabold tabular-nums text-brand-700">{b.broj}</p>
+            <p class="text-sm text-ink-600 mt-1">{b.opis}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- O firmi -->
+  <section class="wrap py-6">
+    <div class="grid gap-8 lg:grid-cols-2 lg:items-center">
+      <div>
+        <SectionHeading eyebrow="O nama" title="Pouzdano od 1990." />
+        <p class="mt-4 text-ink-600 leading-relaxed">
+          REMIS d.o.o. Visoko posluje od 1990. godine. Danas kroz mrežu od deset
+          stanica u Federaciji BiH obavljamo tehnički pregled i registraciju
+          vozila svih kategorija. Sjedište firme je u Visokom.
+        </p>
+        <a href="/o-nama" class="btn btn--secondary mt-6">
+          Više o firmi
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </div>
+      <div>
+        <p class="text-eyebrow uppercase text-ink-500 mb-4">Certifikati i ovlaštenja</p>
+        <Certifikati />
+      </div>
+    </div>
+  </section>
+
+  <script>
+    import { inicijalizirajMapu, type MarkerPodatak, type MapaRezultat } from '../lib/mapa';
+
+    const kontejner = document.querySelector<HTMLElement>('[data-home-mapa]');
+    const forma = document.querySelector<HTMLFormElement>('[data-pronadji]');
+    const unos = document.querySelector<HTMLInputElement>('#grad');
+    const rezultat = document.querySelector<HTMLElement>('[data-rezultat]');
+
+    let mapa: MapaRezultat | null = null;
+    let markeri: MarkerPodatak[] = [];
+
+    if (kontejner) {
+      try {
+        markeri = JSON.parse(kontejner.dataset.markeri ?? '[]');
+      } catch {
+        markeri = [];
+      }
+
+      const obs = new IntersectionObserver(
+        (unosi, o) => {
+          if (!unosi.some((u) => u.isIntersecting) || mapa) return;
+          o.disconnect();
+          inicijalizirajMapu(kontejner, markeri, {
+            popupHtml: (m) =>
+              `<strong>${m.naziv}</strong><br><a href="/stanice/${m.slug}">Detalji stanice →</a>`,
+          }).then((r) => {
+            mapa = r;
+          });
+        },
+        { rootMargin: '200px' },
+      );
+      obs.observe(kontejner);
+    }
+
+    forma?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const upit = (unos?.value ?? '').trim();
+      if (!upit) return;
+
+      // Naziv stanice sadrži ime grada (npr. „REMIS Sarajevo“), pa poklapamo po nazivu.
+      const cilj = markeri.filter((m) => m.naziv.toLowerCase().includes(upit.toLowerCase()));
+
+      if (cilj.length === 0) {
+        if (rezultat) rezultat.textContent = `Nema stanice za „${upit}“. Pogledajte spisak svih stanica.`;
+        return;
+      }
+
+      const prva = cilj[0]!;
+      if (rezultat) {
+        rezultat.textContent =
+          cilj.length === 1
+            ? `Pronađeno: ${prva.naziv}.`
+            : `Pronađeno ${cilj.length} stanica za „${upit}“.`;
+      }
+      mapa?.map.flyTo({ center: [prva.lng, prva.lat], zoom: 14, duration: 800 });
+      mapa?.markeri[prva.slug]?.togglePopup();
+    });
+  </script>
+</PageLayout>
