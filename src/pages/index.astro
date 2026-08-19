@@ -3,7 +3,6 @@ import { getCollection } from 'astro:content';
 import PageLayout from '../layouts/PageLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import Icon from '../components/Icon.astro';
-import Certifikati from '../components/Certifikati.astro';
 import { firma } from '../data/firma';
 import type { MarkerPodatak } from '../lib/mapa';
 
@@ -171,23 +170,17 @@ const organizacijaJsonLd = {
 
   <!-- O firmi -->
   <section class="wrap py-6">
-    <div class="grid gap-8 lg:grid-cols-2 lg:items-center">
-      <div>
-        <SectionHeading eyebrow="O nama" title="Pouzdano od 1990." />
-        <p class="mt-4 text-ink-600 leading-relaxed">
-          REMIS d.o.o. Visoko posluje od 1990. godine. Danas kroz mrežu od deset
-          stanica u Federaciji BiH obavljamo tehnički pregled i registraciju
-          vozila svih kategorija. Sjedište firme je u Visokom.
-        </p>
-        <a href="/o-nama" class="btn btn--secondary mt-6">
-          Više o firmi
-          <Icon name="arrow-right" size={18} />
-        </a>
-      </div>
-      <div>
-        <p class="text-eyebrow uppercase text-ink-500 mb-4">Certifikati i ovlaštenja</p>
-        <Certifikati />
-      </div>
+    <div class="max-w-2xl">
+      <SectionHeading eyebrow="O nama" title="Pouzdano od 1990." />
+      <p class="mt-4 text-ink-600 leading-relaxed">
+        REMIS d.o.o. Visoko posluje od 1990. godine. Danas kroz mrežu od deset
+        stanica u Federaciji BiH obavljamo tehnički pregled i registraciju
+        vozila svih kategorija. Sjedište firme je u Visokom.
+      </p>
+      <a href="/o-nama" class="btn btn--secondary mt-6">
+        Više o firmi
+        <Icon name="arrow-right" size={18} />
+      </a>
     </div>
   </section>
 

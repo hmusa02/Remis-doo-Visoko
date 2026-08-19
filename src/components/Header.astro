@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
-import Button from './Button.astro';
 
 /** Zaglavlje s navigacijom, dropdownom stanica i mobilnim menijem (bez skladištenja). */
 interface Props {
@@ -66,10 +65,6 @@ const nav = [
       }
     </nav>
 
-    <div class="hidden md:block">
-      <Button href="/kontakt" size="sm">Zakaži pregled</Button>
-    </div>
-
     <button
       type="button"
       class="md:hidden inline-flex items-center justify-center w-10 h-10 -mr-2 rounded-md text-ink-900 hover:bg-ink-100"
@@ -106,8 +101,6 @@ const nav = [
       <a href="/cjenovnik" class="mobilni-link" aria-current={active === '/cjenovnik' ? 'page' : undefined}>Cjenovnik</a>
       <a href="/karijera" class="mobilni-link" aria-current={active === '/karijera' ? 'page' : undefined}>Karijera</a>
       <a href="/kontakt" class="mobilni-link" aria-current={active === '/kontakt' ? 'page' : undefined}>Kontakt</a>
-
-      <Button href="/kontakt" block class="mt-4">Zakaži pregled</Button>
     </nav>
   </div>
 </header>
