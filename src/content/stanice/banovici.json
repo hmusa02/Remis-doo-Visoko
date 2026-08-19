@@ -3,11 +3,12 @@
   "naziv": "REMIS Banovići",
   "grad": "Banovići",
   "kanton": "TK",
-  "adresa": "Branilaca 4",
+  "adresa": "Armije BiH bb",
   "postanskiBroj": "75290",
   "lat": 44.4132434,
   "lng": 18.5381983,
   "telefon": "035/871-300",
+  "email": "tp.banovici@remis.ba",
   "radnoVrijeme": {
     "ponPet": "07:30-17:00",
     "subota": "08:00-10:30",

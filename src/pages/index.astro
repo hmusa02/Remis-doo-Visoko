@@ -40,11 +40,15 @@ const organizacijaJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: firma.naziv,
+  legalName: firma.puniNaziv,
   url: new URL('/', Astro.site).href,
+  sameAs: [`https://${firma.web}`],
   logo: new URL('/favicon.svg', Astro.site).href,
   foundingDate: String(firma.osnovana),
   telephone: firma.telefon,
   email: firma.email,
+  taxID: firma.idBroj,
+  identifier: firma.maticniBroj,
   address: {
     '@type': 'PostalAddress',
     streetAddress: firma.adresa,
@@ -57,8 +61,8 @@ const organizacijaJsonLd = {
 ---
 
 <PageLayout
-  title="REMIS — tehnički pregled vozila u Federaciji BiH"
-  description="REMIS d.o.o. Visoko — tehnički pregled i registracija vozila na 10 stanica u FBiH. Pronađite najbližu stanicu, provjerite radno vrijeme i cjenovnik."
+  title="REMIS — Tehnički pregledi vozila | Federacija BiH"
+  description="REMIS d.o.o. Visoko — tehnički pregledi vozila i registracija na 10 stanica u Federaciji BiH. Pronađite najbližu stanicu, provjerite radno vrijeme i cjenovnik."
   active="/"
 >
   <!-- HERO = alat: pronađi najbližu stanicu -->

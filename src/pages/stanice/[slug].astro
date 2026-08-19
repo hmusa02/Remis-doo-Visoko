@@ -23,6 +23,10 @@ export async function getStaticPaths() {
 const { stanica } = Astro.props;
 const d = stanica.data;
 
+// Naziv razbijamo na prefiks (REMIS / Transport) i grad — za h1 tretman.
+const [imePrefiks, ...imeOstatak] = d.naziv.split(' ');
+const imeGrad = imeOstatak.join(' ');
+
 const slike = slikeStanice(d.slug);
 
 // Usluge: vlastite ako su definisane, inače opšti spisak (nikad prazan blok).
@@ -70,6 +74,7 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'AutomotiveBusiness',
   name: d.naziv,
+  ...(d.pravnoLice ? { legalName: d.pravnoLice } : {}),
   address: {
     '@type': 'PostalAddress',
     streetAddress: d.adresa,
@@ -123,7 +128,10 @@ const jsonLd = {
         {d.grad} · {d.kanton}
       </div>
       <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-3">
-        <h1 class="text-display text-ink-900">{d.naziv}</h1>
+        <h1 class="text-display">
+          <span class="text-brand-700 font-semibold tracking-[0.06em]">{imePrefiks}</span>{' '}
+          <span class="text-ink-900 font-extrabold">{imeGrad}</span>
+        </h1>
         <span data-radno={JSON.stringify(d.radnoVrijeme)}>
           <span class="badge" data-status-badge data-state={status.otvorena ? 'open' : 'closed'}>
             <span class="badge-dot"></span>

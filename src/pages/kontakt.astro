@@ -8,6 +8,7 @@ import Icon from '../components/Icon.astro';
 import MapaStanica from '../components/MapaStanica.astro';
 import Forma from '../components/Forma.astro';
 import { firma } from '../data/firma';
+import { telefonHref } from '../lib/format';
 import type { MarkerPodatak } from '../lib/mapa';
 
 const stanice = (await getCollection('stanice')).sort(
@@ -19,7 +20,7 @@ const markeri: MarkerPodatak[] = stanice.map((s) => ({
   lng: s.data.lng,
   lat: s.data.lat,
 }));
-const telSjediste = firma.telefon.replace(/[^\d+]/g, '');
+const telSjediste = telefonHref(firma.telefon);
 ---
 
 <PageLayout

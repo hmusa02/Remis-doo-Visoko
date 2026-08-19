@@ -1,13 +1,14 @@
 {
   "slug": "kakanj",
-  "naziv": "REMIS Kakanj",
+  "naziv": "Transport Kakanj",
   "grad": "Kakanj",
   "kanton": "ZE-DO",
-  "adresa": "311. lahke brigade",
+  "adresa": "311. lahke brigade bb",
   "postanskiBroj": "72240",
   "lat": 44.1243889,
   "lng": 18.1055577,
   "telefon": "032/557-780",
+  "email": "transport1@bih.net.ba",
   "radnoVrijeme": {
     "ponPet": "07:00-15:30",
     "subota": "08:00-10:30",
@@ -17,6 +18,7 @@
     "ime": "Senada Šehagić",
     "telefon": "061 477 623"
   },
-  "pravnoLice": "\"Transport\" d.o.o. Kakanj, u sastavu REMIS-a",
+  "pravnoLice": "TRANSPORT d.o.o. Kakanj",
+  "napomena": "Stanica posluje kao TRANSPORT d.o.o. Kakanj, društvo u stopostotnom vlasništvu REMIS d.o.o. Visoko.",
   "redoslijed": 4
 }

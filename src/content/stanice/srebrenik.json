@@ -3,11 +3,12 @@
   "naziv": "REMIS Srebrenik",
   "grad": "Srebrenik",
   "kanton": "TK",
-  "adresa": "Ćehaje bb (uz M1.8)",
+  "adresa": "Bosanskih branilaca bb",
   "postanskiBroj": "75350",
   "lat": 44.7208108,
   "lng": 18.4875253,
   "telefon": "035/",
+  "email": "tp.srebrenik@remis.ba",
   "radnoVrijeme": {
     "ponPet": "07:30-17:00",
     "subota": "08:00-10:30",
