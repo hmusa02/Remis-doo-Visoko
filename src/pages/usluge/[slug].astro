@@ -106,7 +106,7 @@ const stanice = (await getCollection('stanice')).sort(
           caption={`Cijena — ${u.naziv}`}
           columns={[
             { key: 'vozilo', label: 'Vozilo' },
-            { key: 'vanredni', label: 'Vanredni / preventivni', numeric: true },
+            { key: 'vanredni', label: 'Vanredni / tromjesečni / šestomjesečni / preventivni', numeric: true },
             { key: 'redovni', label: 'Redovni / eksploatacioni', numeric: true },
           ]}
           rows={cjenovnikRedovi}

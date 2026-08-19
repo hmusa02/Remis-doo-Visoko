@@ -16,7 +16,7 @@ const m1 = cjenovnik.filter((s) => s.kod === 'M1');
 
 const kolone = [
   { key: 'vozilo', label: 'Vozilo' },
-  { key: 'vanredni', label: 'Vanredni / preventivni', numeric: true },
+  { key: 'vanredni', label: 'Vanredni / tromjesečni / šestomjesečni / preventivni', numeric: true },
   { key: 'redovni', label: 'Redovni / eksploatacioni', numeric: true },
 ];
 
@@ -62,7 +62,7 @@ function redoviZa(kat: KategorijaVozila) {
           <p class="text-sm text-ink-500 mt-1">Do 8 sjedišta · redovni tehnički pregled</p>
         </div>
         <div class="text-sm text-ink-500">
-          Vanredni / preventivni: <span class="font-semibold text-ink-900 tabular-nums">{formatKM(m1[0]!.vanredni)}</span>
+          Vanredni / tromjesečni / šestomjesečni / preventivni: <span class="font-semibold text-ink-900 tabular-nums">{formatKM(m1[0]!.vanredni)}</span>
         </div>
       </div>
       <div class="mt-6 grid gap-3 sm:grid-cols-3">

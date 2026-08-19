@@ -5,39 +5,100 @@ import SectionHeading from '../components/SectionHeading.astro';
 import Card from '../components/Card.astro';
 import Icon from '../components/Icon.astro';
 
-// FAQ — pitanja i odgovori (koriste se i za prikaz i za JSON-LD).
+// Izvor činjenica: IPI Zenica (ovlaštena institucija). Tekst je pisan
+// vlastitim riječima, jednostavno, za običnog vozača.
+
+// --- Prije dolaska (obavezno) ---
+const prijeDolaska = [
+  {
+    icon: 'droplet' as const,
+    naslov: 'Vozilo mora biti čisto',
+    tekst: 'Ako je vozilo prljavo, pregled se ne može obaviti — kontrolor mora vidjeti karoseriju, brojeve i podvozje.',
+  },
+  {
+    icon: 'building' as const,
+    naslov: 'Vozilo mora biti prazno',
+    tekst: 'Dođite bez tereta u vozilu. Pun prtljažnik ili teret ometaju provjeru i mjerenje.',
+  },
+  {
+    icon: 'clipboard-check' as const,
+    naslov: 'Ponesite dokumente',
+    tekst: 'Saobraćajnu dozvolu (ili potvrdu o registraciji), a atest ako su mijenjani tehnički podaci vozila.',
+  },
+];
+
+// --- Kada se ide na pregled ---
+const kada = [
+  { kad: 'Redovni pregled', tekst: 'Jednom godišnje. Možete doći najranije 30 dana prije isteka registracije.' },
+  { kad: 'Vozila starija od 4 godine', tekst: 'Na pregled se ide svakih 12 mjeseci.' },
+  { kad: 'Uvezena rabljena vozila', tekst: 'Pregled je obavezan prije prve registracije u BiH.' },
+  { kad: 'Nova vozila', tekst: 'Prvi pregledi su nakon 24 i nakon 48 mjeseci od prve registracije.' },
+];
+
+// --- Kako teče pregled (3 koraka) ---
+const koraci = [
+  { icon: 'search' as const, naslov: 'Identifikacija', tekst: 'Provjera broja šasije i podataka vozila prema dokumentima.' },
+  { icon: 'check' as const, naslov: 'Vizuelni pregled', tekst: 'Karoserija, gume, stakla, svjetla i oznake — sve što se vidi okom.' },
+  { icon: 'gauge' as const, naslov: 'Pregled uređajima', tekst: 'Mjerenje na uređajima: kočnice, svjetla, izduvni gasovi i ovjes.' },
+];
+
+// --- Provjerite sami prije dolaska ---
+const samoprovjera = [
+  'Kočnice (najčešći uzrok pada na pregledu)',
+  'Svjetla i pokazivači smjera',
+  'Gume i dubina šare',
+  'Brisači',
+  'Retrovizori i stakla',
+  'Izduvni sistem',
+  'Kontrolne lampice na tabli',
+];
+
+// FAQ — pitanja i odgovori (koriste se i za prikaz i za FAQPage schemu).
 const faq = [
+  {
+    pitanje: 'Šta trebam ponijeti na tehnički pregled?',
+    odgovor:
+      'Saobraćajnu dozvolu ili potvrdu o registraciji, i samo vozilo. Ako su mijenjani tehnički podaci vozila, ponesite i atest. Vozilo treba biti čisto i prazno.',
+  },
+  {
+    pitanje: 'Mora li vozilo biti čisto?',
+    odgovor:
+      'Da. Ako je vozilo prljavo, kontrolor ne može pregledati karoseriju, brojeve i podvozje, pa se pregled ne može obaviti. Dođite s opranim vozilom.',
+  },
   {
     pitanje: 'Koliko traje tehnički pregled?',
     odgovor:
-      'Tehnički pregled traje od 10 do 15 minuta za sva vozila. U slučaju gužve na stanici moguće je kraće čekanje prije pregleda.',
+      'Za putničko vozilo pregled traje otprilike 20 do 30 minuta. U slučaju gužve moguće je kraće čekanje prije samog pregleda.',
   },
   {
-    pitanje: 'Mogu li registraciju obaviti na istom mjestu?',
+    pitanje: 'Kada mogu doći na pregled?',
     odgovor:
-      'Da. Na našim stanicama možete obaviti tehnički pregled, osiguranje i registraciju vozila — sve na jednom mjestu, bez odlaska na više adresa.',
+      'Na redovni pregled možete doći najranije 30 dana prije isteka registracije. Vozila starija od 4 godine idu na pregled svakih 12 mjeseci, a uvezena rabljena vozila prije prve registracije.',
   },
   {
-    pitanje: 'Šta ako vozilo ne prođe tehnički pregled?',
+    pitanje: 'Šta ako vozilo ne prođe?',
     odgovor:
-      'Dobit ćete nalaz s nedostacima koje treba otkloniti. Nakon popravke vozilo donosite na ponovni pregled. Ako ga obavite u propisanom roku, provjerava se samo ono što nije bilo ispravno.',
+      'Dobit ćete nalaz s tačnim spiskom nedostataka koje treba otkloniti. Nakon popravke vozilo donosite na ponovni pregled, na kojem se provjerava ono što nije bilo ispravno. Za rok i eventualne troškove ponovnog pregleda pitajte osoblje stanice.',
   },
   {
-    pitanje: 'Trebam li zakazati termin?',
+    pitanje: 'Šta je EKO test i moram li ga raditi?',
     odgovor:
-      'Zakazivanje nije obavezno — možete doći u toku radnog vremena. Ako želite izbjeći gužvu, nazovite stanicu i provjerite najbolje vrijeme za dolazak.',
+      'EKO test provjerava izduvne gasove i radi se jednom godišnje uz redovni pregled. Od 2020. je eliminatoran — vozilo mora zadovoljiti i EKO test da bi prošlo tehnički pregled. Zato cijena za putnička vozila (M1) ovisi o vrsti pogona (bez katalizatora, benzin ili dizel).',
   },
   {
-    pitanje: 'Koje dokumente da ponesem?',
+    pitanje: 'Koliko košta tehnički pregled?',
     odgovor:
-      'Za tehnički pregled ponesite saobraćajnu dozvolu (potvrdu o registraciji) i vozilo. Za registraciju su potrebni i dokazi o vlasništvu, osiguranju i plaćenim obavezama. Za tačan spisak u vašem slučaju slobodno pitajte osoblje stanice.',
+      'Cijena ovisi o kategoriji vozila, a kod putničkih i o vrsti pogona zbog EKO testa. Kompletan pregled cijena po kategorijama nalazi se u cjenovniku.',
   },
   {
-    pitanje: 'Radite li subotom?',
+    pitanje: 'Treba li zakazati termin?',
     odgovor:
-      'Da, svaka stanica radi subotom od 08:00 do 10:30.',
+      'Ne. Možete doći u toku radnog vremena, bez najave. Ako želite izbjeći gužvu, nazovite stanicu i provjerite najbolje vrijeme za dolazak.',
   },
 ];
+// NAPOMENA (klijent da potvrdi): u odgovoru „Šta ako vozilo ne prođe" ostavljena
+// je neutralna formulacija o roku i naplati ponovnog pregleda — nije potvrđeno
+// iz javnih izvora. Kad stigne tačan podatak, dopuniti odgovor.
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -48,29 +109,11 @@ const jsonLd = {
     acceptedAnswer: { '@type': 'Answer', text: f.odgovor },
   })),
 };
-
-const vodic = [
-  {
-    naslov: 'Šta je potrebno za registraciju vozila',
-    tekst:
-      'Za registraciju je potrebno da vozilo prođe tehnički pregled, da imate valjano osiguranje od autoodgovornosti i da su izmirene propisane obaveze. Kod nas sve to možete obaviti na jednom mjestu — nakon pregleda sređujemo osiguranje i registracijske oznake.',
-  },
-  {
-    naslov: 'Koliko često se radi tehnički pregled',
-    tekst:
-      'Tehnički pregled se za većinu vozila obavlja jednom godišnje, prilikom produženja registracije. Pojedine kategorije vozila (npr. ona u privrednoj upotrebi) podliježu češćim, šestomjesečnim pregledima.',
-  },
-  {
-    naslov: 'Šta ako vozilo ne prođe',
-    tekst:
-      'Ako se utvrde nedostaci, dobijate nalaz s tačnim spiskom onoga što treba popraviti. Nakon otklanjanja kvarova vozilo donosite na ponovni pregled. Ukoliko to uradite u propisanom roku, ponovni pregled je jednostavniji i provjerava se samo ono što nije bilo ispravno.',
-  },
-];
 ---
 
 <PageLayout
-  title="Vodič i česta pitanja — REMIS"
-  description="Sve što trebate znati o tehničkom pregledu i registraciji vozila: potrebni dokumenti, koliko često se radi pregled i šta ako vozilo ne prođe."
+  title="Vodič za tehnički pregled — šta ponijeti i kako teče | REMIS"
+  description="Kako se pripremiti za tehnički pregled: šta ponijeti, kada doći, kako teče pregled, šta je EKO test i šta provjeriti sami prije dolaska."
   active="/info"
 >
   <section class="wrap pt-8">
@@ -79,22 +122,152 @@ const vodic = [
       <SectionHeading
         as="h1"
         eyebrow="Vodič"
-        title="Tehnički pregled i registracija"
-        description="Kratak, jednostavan vodič kroz najvažnije. Za sve nejasno, osoblje na stanici rado pomaže."
+        title="Tehnički pregled — kako se pripremiti"
+        description="Kratak, jednostavan vodič da pregled prođe iz prve. Za sve nejasno, osoblje na stanici rado pomaže."
       />
     </div>
   </section>
 
-  <!-- Vodič -->
-  <section class="wrap mt-8 grid gap-5 md:grid-cols-3">
-    {
-      vodic.map((v) => (
-        <Card class="p-6">
-          <h2 class="font-display font-bold text-lg text-ink-900">{v.naslov}</h2>
-          <p class="mt-2 text-sm text-ink-600 leading-relaxed">{v.tekst}</p>
-        </Card>
-      ))
-    }
+  <!-- Prije dolaska (obavezno) -->
+  <section class="wrap mt-10">
+    <h2 class="text-title text-ink-900 mb-4">Prije dolaska — obavezno</h2>
+    <div class="grid gap-4 md:grid-cols-3">
+      {
+        prijeDolaska.map((s) => (
+          <Card class="p-6">
+            <span class="w-11 h-11 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center">
+              <Icon name={s.icon} size={20} />
+            </span>
+            <h3 class="mt-4 font-display font-bold text-ink-900">{s.naslov}</h3>
+            <p class="mt-1.5 text-sm text-ink-600 leading-relaxed">{s.tekst}</p>
+          </Card>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Kada se ide na pregled -->
+  <section class="wrap mt-12">
+    <div class="flex items-center gap-2.5 mb-4">
+      <Icon name="calendar" size={22} class="text-brand-700" />
+      <h2 class="text-title text-ink-900">Kada se ide na pregled</h2>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2">
+      {
+        kada.map((k) => (
+          <Card class="p-5">
+            <h3 class="font-semibold text-ink-900">{k.kad}</h3>
+            <p class="mt-1 text-sm text-ink-600 leading-relaxed">{k.tekst}</p>
+          </Card>
+        ))
+      }
+    </div>
+
+    <!-- Tromjesečni pregled — istaknuto (vlasnici starijih vozila često ne znaju) -->
+    <div class="mt-4 rounded-card bg-brand-700 text-white p-5 md:p-6">
+      <div class="flex items-start gap-3.5">
+        <span class="w-11 h-11 rounded-lg bg-white/15 flex items-center justify-center shrink-0">
+          <Icon name="clock" size={22} />
+        </span>
+        <div>
+          <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/70">Važno za starija vozila</p>
+          <h3 class="mt-1 font-display font-bold text-lg text-white">Vozila starija od 20 godina — pregled svaka 3 mjeseca</h3>
+          <p class="mt-1.5 text-sm text-white/85 leading-relaxed">
+            Ako je vaše vozilo starije od 20 godina, na tehnički pregled se ide
+            svaka tri mjeseca, a ne jednom godišnje. Mnogi vlasnici to ne znaju —
+            provjerite godinu prve registracije na vrijeme.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preventivni pregled -->
+    <div class="mt-4 rounded-card border border-brand-200 bg-brand-100/40 p-5">
+      <div class="flex items-start gap-3">
+        <Icon name="alert-triangle" size={20} class="text-brand-700 mt-0.5 shrink-0" />
+        <div>
+          <h3 class="font-semibold text-ink-900">Preventivni pregled (6 mjeseci nakon redovnog)</h3>
+          <p class="mt-1 text-sm text-ink-700 leading-relaxed">
+            Obavezan je za rent-a-car vozila, vozila autoškola, taksi, autobuse,
+            ADR vozila te teretna i priključna vozila preko 7.500 kg. Ne odnosi
+            se na vozila mlađa od 4 godine.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Kako teče pregled -->
+  <section class="wrap mt-12">
+    <h2 class="text-title text-ink-900 mb-1">Kako teče pregled</h2>
+    <p class="text-sm text-ink-500 mb-6">Za putničko vozilo cijeli pregled traje oko 20–30 minuta.</p>
+    <div class="grid gap-4 md:grid-cols-3">
+      {
+        koraci.map((k, i) => (
+          <Card class="p-6 relative">
+            <span class="absolute top-5 right-5 text-3xl font-extrabold text-ink-100 tabular-nums">{i + 1}</span>
+            <span class="w-11 h-11 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center">
+              <Icon name={k.icon} size={20} />
+            </span>
+            <h3 class="mt-4 font-display font-bold text-ink-900">{k.naslov}</h3>
+            <p class="mt-1.5 text-sm text-ink-600 leading-relaxed">{k.tekst}</p>
+          </Card>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- EKO test -->
+  <section class="wrap mt-12">
+    <Card class="p-6 md:p-8">
+      <div class="flex items-start gap-4">
+        <span class="w-12 h-12 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center shrink-0">
+          <Icon name="leaf" size={22} />
+        </span>
+        <div>
+          <h2 class="font-display font-bold text-xl text-ink-900">EKO test</h2>
+          <p class="mt-2 text-ink-700 leading-relaxed">
+            EKO test provjerava izduvne gasove i radi se jednom godišnje, zajedno
+            s redovnim pregledom. Od 2020. je <strong>eliminatoran</strong> — vozilo
+            mora zadovoljiti i EKO test da bi uopšte prošlo tehnički pregled. Zbog
+            toga cijena za putnička vozila (M1) ovisi o pogonu: bez katalizatora,
+            benzin ili dizel.
+          </p>
+          <a href="/cjenovnik" class="inline-flex items-center gap-1 mt-4 text-sm font-semibold text-brand-700">
+            Pogledaj cijene po pogonu
+            <Icon name="arrow-right" size={16} />
+          </a>
+        </div>
+      </div>
+    </Card>
+  </section>
+
+  <!-- Provjerite sami prije dolaska -->
+  <section class="wrap mt-12">
+    <div class="grid gap-6 lg:grid-cols-2 lg:items-center">
+      <div>
+        <div class="flex items-center gap-2.5 mb-3">
+          <Icon name="wrench" size={22} class="text-brand-700" />
+          <h2 class="text-title text-ink-900">Provjerite sami prije dolaska</h2>
+        </div>
+        <p class="text-ink-600 leading-relaxed">
+          Kočnice su najčešći uzrok pada na pregledu. Pet minuta provjere kod kuće
+          može vam uštedjeti ponovni dolazak. Prije puta bacite oko na sljedeće:
+        </p>
+      </div>
+      <Card class="p-6">
+        <ul class="grid sm:grid-cols-2 gap-x-6 gap-y-2.5">
+          {
+            samoprovjera.map((s) => (
+              <li class="flex items-start gap-2.5 text-sm text-ink-700">
+                <Icon name="check" size={16} class="text-brand-700 mt-0.5 shrink-0" />
+                <span>{s}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </Card>
+    </div>
   </section>
 
   <!-- FAQ (accordion preko <details>, radi bez JS-a) -->

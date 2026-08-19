@@ -3,7 +3,7 @@
  * u izvoru — prikazati kako jeste).
  *
  * Dvije kolone:
- *   - `vanredni`: vanredni / šestomjesečni / preventivni pregled
+ *   - `vanredni`: vanredni / tromjesečni / šestomjesečni / preventivni pregled
  *   - `redovni`:  redovni / eksploatacioni pregled
  *
  * Napomena: M1 (putnički automobil) ima TRI zasebna zapisa (bez R.K., benzin,
@@ -27,7 +27,7 @@ export interface StavkaCjenovnika {
   kategorija: KategorijaVozila;
   /** Opis/naziv reda kako se prikazuje korisniku. */
   naziv: string;
-  /** Vanredni / šestomjesečni / preventivni pregled (KM). */
+  /** Vanredni / tromjesečni / šestomjesečni / preventivni pregled (KM). */
   vanredni: number;
   /** Redovni / eksploatacioni pregled (KM). */
   redovni: number;
