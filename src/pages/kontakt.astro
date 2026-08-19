@@ -6,7 +6,6 @@ import SectionHeading from '../components/SectionHeading.astro';
 import Card from '../components/Card.astro';
 import Icon from '../components/Icon.astro';
 import MapaStanica from '../components/MapaStanica.astro';
-import Forma from '../components/Forma.astro';
 import { firma } from '../data/firma';
 import { telefonHref } from '../lib/format';
 import type { MarkerPodatak } from '../lib/mapa';
@@ -40,9 +39,13 @@ const telSjediste = telefonHref(firma.telefon);
     </div>
   </section>
 
-  <!-- Sjedište + forma -->
-  <section class="wrap mt-8 grid gap-6 lg:grid-cols-2">
-    <Card class="p-6">
+  <!-- Sjedište -->
+  <section class="wrap mt-8">
+    <p class="text-ink-600 mb-4 max-w-2xl">
+      Za sve upite nas pozovite ili pošaljite e-mail — rado ćemo pomoći. Za
+      pojedinu stanicu koristite njen broj iz spiska ispod.
+    </p>
+    <Card class="p-6 max-w-xl">
       <h2 class="text-eyebrow uppercase text-ink-500 mb-4">Sjedište firme</h2>
       <address class="not-italic space-y-3 text-ink-700">
         <p class="flex items-start gap-3">
@@ -66,12 +69,6 @@ const telSjediste = telefonHref(firma.telefon);
         istoj adresi, ali ima poseban telefon
         (<a href="/stanice/visoko" class="text-brand-700">REMIS Visoko</a>).
       </p>
-    </Card>
-
-    <!-- Kontakt forma (Web3Forms) -->
-    <Card class="p-6">
-      <h2 class="text-eyebrow uppercase text-ink-500 mb-4">Pošaljite upit</h2>
-      <Forma tip="kontakt" />
     </Card>
   </section>
 
