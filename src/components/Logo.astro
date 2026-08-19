@@ -1,29 +1,29 @@
 ---
-import { Image } from 'astro:assets';
+// Inline SVG wordmark (fill="currentColor" → boju preuzima iz CSS-a).
 // JEDINO mjesto gdje se mijenja izvorni fajl logotipa.
-// Kad stigne vektor (SVG), zamijeni samo ovaj import.
-import logoSrc from '../assets/remis-logo.jpeg';
+import logoSvg from '../assets/remis-logo.svg?raw';
 
 /**
- * Logo firme. Učitava se kroz Astro image pipeline (optimizacija + eksplicitni
- * width/height → nema layout shifta). Fajl je JPEG s bijelom pozadinom, pa
- * logo mora stajati na svijetloj podlozi.
+ * Logo firme — inline SVG (ne <img>), da `currentColor` radi na bilo kojoj
+ * podlozi. Visina se kontroliše preko CSS-a (`--logo-h`), omjer se čuva sam.
  */
 interface Props {
-  /** Visina prikaza u px (širina se računa iz omjera). */
+  /** Visina wordmarka u px. */
   height?: number;
+  /** Prikaži službeni podnaslov „Tehnički pregledi vozila". */
+  podnaslov?: boolean;
   class?: string;
 }
-const { height = 34, class: klasa = '' } = Astro.props;
-const width = Math.round(height * (logoSrc.width / logoSrc.height));
+const { height = 30, podnaslov = true, class: klasa = '' } = Astro.props;
 ---
 
-<Image
-  src={logoSrc}
-  alt="REMIS d.o.o. Visoko"
-  width={width}
-  height={height}
-  densities={[1, 2]}
-  loading="eager"
-  class={`block w-auto ${klasa}`}
-/>
+<span class={`inline-flex flex-col ${klasa}`}>
+  <span class="logo" style={`--logo-h:${height}px`} set:html={logoSvg} />
+  {
+    podnaslov && (
+      <span class="text-[10px] font-semibold tracking-[0.16em] uppercase mt-1 text-ink-500">
+        Tehnički pregledi vozila
+      </span>
+    )
+  }
+</span>

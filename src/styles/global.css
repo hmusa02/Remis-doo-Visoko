@@ -12,7 +12,8 @@
      s mreže (bitno za mobitel na slaboj vezi). */
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
-  --font-display: "Helvetica Neue", "Segoe UI", Roboto, Arial, ui-sans-serif,
+  /* Naslovi: Poppins (geometrijski grotesk, u duhu logotipa) + sistemski fallback */
+  --font-display: "Poppins", "Segoe UI", Roboto, Arial, ui-sans-serif,
     system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", "Roboto Mono", Menlo, Consolas, monospace;
 
@@ -515,4 +516,10 @@
   .status-uspjeh { color: var(--color-open); font-weight: 500; }
   .status-greska { color: #b3261e; font-weight: 500; }
   textarea.odabir { background-image: none; padding-right: 0.85rem; line-height: 1.5; }
+}
+
+@layer components {
+  /* --- Logo (inline SVG, currentColor) ----------------------------------- */
+  .logo { display: inline-block; line-height: 0; }
+  .logo svg { height: var(--logo-h, 30px); width: auto; display: block; }
 }
