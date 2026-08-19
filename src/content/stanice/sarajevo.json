@@ -13,5 +13,9 @@
     "subota": "08:00-10:30",
     "nedjelja": "zatvoreno"
   },
+  "voditelj": {
+    "ime": "Edin Škulj",
+    "telefon": "061 608 659"
+  },
   "redoslijed": 8
 }

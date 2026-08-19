@@ -46,7 +46,10 @@ const telSjediste = firma.telefon.replace(/[^\d+]/g, '');
       <address class="not-italic space-y-3 text-ink-700">
         <p class="flex items-start gap-3">
           <Icon name="building" size={18} class="text-ink-400 mt-0.5 shrink-0" />
-          <span>{firma.naziv}<br />{firma.adresa}, {firma.postanskiBroj} {firma.grad}</span>
+          <span>
+            {firma.naziv} <span class="text-ink-400">(uprava)</span><br />
+            {firma.adresa}, {firma.postanskiBroj} {firma.grad}
+          </span>
         </p>
         <a href={`tel:${telSjediste}`} class="flex items-center gap-3 hover:text-brand-700 transition-colors w-fit">
           <Icon name="phone" size={18} class="text-ink-400 shrink-0" />
@@ -57,6 +60,11 @@ const telSjediste = firma.telefon.replace(/[^\d+]/g, '');
           <span>{firma.email}</span>
         </a>
       </address>
+      <p class="mt-4 text-xs text-ink-400 border-t border-ink-100 pt-3">
+        Uprava firme — nije stanica tehničkog pregleda. Stanica u Visokom je na
+        istoj adresi, ali ima poseban telefon
+        (<a href="/stanice/visoko" class="text-brand-700">REMIS Visoko</a>).
+      </p>
     </Card>
 
     <!-- Kontakt forma (Web3Forms) -->

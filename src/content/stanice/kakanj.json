@@ -10,8 +10,12 @@
   "telefon": "032/557-780",
   "radnoVrijeme": {
     "ponPet": "07:00-15:30",
-    "subota": "zatvoreno",
+    "subota": "08:00-10:30",
     "nedjelja": "zatvoreno"
+  },
+  "voditelj": {
+    "ime": "Senada Šehagić",
+    "telefon": "061 477 623"
   },
   "pravnoLice": "\"Transport\" d.o.o. Kakanj, u sastavu REMIS-a",
   "redoslijed": 4

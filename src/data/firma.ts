@@ -4,7 +4,7 @@
  */
 export const firma = {
   naziv: 'REMIS d.o.o. Visoko',
-  adresa: 'Braće Zečevića 3/a',
+  adresa: 'Kakanjska bb',
   postanskiBroj: '71300',
   grad: 'Visoko',
   telefon: '032/730-300',

@@ -10,8 +10,12 @@
   "telefon": "030/710-749",
   "radnoVrijeme": {
     "ponPet": "07:30-17:00",
-    "subota": "07:30-12:00",
+    "subota": "08:00-10:30",
     "nedjelja": "zatvoreno"
+  },
+  "voditelj": {
+    "ime": "Nedim Kelestura",
+    "telefon": "062 932 701"
   },
   "redoslijed": 9
 }

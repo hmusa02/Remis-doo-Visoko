@@ -46,12 +46,12 @@ const telDigits = firma.telefon.replace(/[^\d+]/g, '');
     </div>
 
     <div>
-      <h2 class="text-eyebrow uppercase text-ink-500 mb-4">Sjedište</h2>
+      <h2 class="text-eyebrow uppercase text-ink-500 mb-4">Sjedište firme</h2>
       <address class="not-italic space-y-2.5 text-sm">
         <p class="flex items-start gap-2.5">
           <Icon name="building" size={16} class="text-ink-400 mt-0.5 shrink-0" />
           <span>
-            {firma.naziv}<br />
+            {firma.naziv} <span class="text-ink-400">(uprava)</span><br />
             {firma.adresa}, {firma.postanskiBroj} {firma.grad}
           </span>
         </p>

@@ -13,5 +13,9 @@
     "subota": "08:00-10:30",
     "nedjelja": "zatvoreno"
   },
+  "voditelj": {
+    "ime": "Jasmin Džulić",
+    "telefon": "061 848 054"
+  },
   "redoslijed": 2
 }

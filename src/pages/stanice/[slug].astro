@@ -9,6 +9,7 @@ import Card from '../../components/Card.astro';
 import Icon from '../../components/Icon.astro';
 import { slikeStanice } from '../../lib/slike';
 import { statusStanice } from '../../lib/radno-vrijeme';
+import { telefonHref } from '../../lib/format';
 import { firma } from '../../data/firma';
 
 export async function getStaticPaths() {
@@ -152,6 +153,20 @@ const jsonLd = {
             </a>
           )
         }
+        {
+          d.voditelj && (
+            <p class="flex items-center gap-3">
+              <Icon name="user" size={18} class="text-ink-400 shrink-0" />
+              <span>
+                Voditelj: <span class="font-medium text-ink-900">{d.voditelj.ime}</span>
+                <span class="text-ink-400"> · </span>
+                <a href={`tel:${telefonHref(d.voditelj.telefon)}`} class="text-brand-700 hover:underline tabular-nums">
+                  {d.voditelj.telefon}
+                </a>
+              </span>
+            </p>
+          )
+        }
       </div>
 
       {
@@ -231,25 +246,6 @@ const jsonLd = {
       }
     </div>
   </section>
-
-  <!-- Voditelj (samo ako postoji) -->
-  {
-    d.voditelj && (
-      <section class="wrap mt-12">
-        <h2 class="text-title text-ink-900 mb-4">Voditelj stanice</h2>
-        <Card class="p-6 flex items-center justify-between gap-4 max-w-md">
-          <div>
-            <p class="font-semibold text-ink-900">{d.voditelj.ime}</p>
-            <p class="text-sm text-ink-500">Voditelj</p>
-          </div>
-          <a href={`tel:${d.voditelj.telefon.replace(/[^\d+]/g, '')}`} class="btn btn--secondary btn--sm">
-            <Icon name="phone" size={16} />
-            {d.voditelj.telefon}
-          </a>
-        </Card>
-      </section>
-    )
-  }
 
   <!-- Otvorene pozicije (samo ako ima aktivan oglas) -->
   {

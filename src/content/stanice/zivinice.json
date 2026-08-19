@@ -10,8 +10,12 @@
   "telefon": "035/750-311",
   "radnoVrijeme": {
     "ponPet": "07:30-15:30",
-    "subota": "07:30-12:00",
+    "subota": "08:00-10:30",
     "nedjelja": "zatvoreno"
+  },
+  "voditelj": {
+    "ime": "Sabina Salkić",
+    "telefon": "061 637 305"
   },
   "redoslijed": 6
 }
