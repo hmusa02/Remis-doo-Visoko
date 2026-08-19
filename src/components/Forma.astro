@@ -1,0 +1,206 @@
+---
+import { getCollection } from 'astro:content';
+import Icon from './Icon.astro';
+
+/**
+ * Forma (kontakt ili prijava na posao). Šalje se preko Web3Forms
+ * (access_key iz PUBLIC_WEB3FORMS_KEY). Ima honeypot, klijentsku validaciju
+ * s porukama na bosanskom, i stanja slanja (loading/uspjeh/greška).
+ * Bez localStorage.
+ */
+interface Props {
+  tip: 'kontakt' | 'prijava';
+  /** Za prijavu: naziv pozicije (ide u skriveno polje i subject). */
+  oglas?: string;
+  /** Za prijavu: naziv stanice (skriveno polje). */
+  stanica?: string;
+}
+const { tip, oglas, stanica } = Astro.props;
+
+const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
+
+const subject =
+  tip === 'prijava'
+    ? `Prijava na posao: ${oglas ?? 'Otvorena prijava'}${stanica ? ` — ${stanica}` : ''}`
+    : 'Upit sa REMIS sajta';
+
+// Za kontakt formu — spisak stanica u <select>.
+const stanice =
+  tip === 'kontakt'
+    ? (await getCollection('stanice')).sort((a, b) => a.data.redoslijed - b.data.redoslijed)
+    : [];
+---
+
+<form data-web3forma novalidate class="space-y-4">
+  <input type="hidden" name="access_key" value={accessKey} />
+  <input type="hidden" name="subject" value={subject} />
+  <input type="hidden" name="from_name" value="REMIS web" />
+  {oglas && <input type="hidden" name="Oglas" value={oglas} />}
+  {stanica && <input type="hidden" name="Stanica" value={stanica} />}
+
+  {/* Honeypot — skriven od korisnika, boti ga popune */}
+  <input
+    type="checkbox"
+    name="botcheck"
+    tabindex="-1"
+    autocomplete="off"
+    aria-hidden="true"
+    style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0"
+  />
+
+  {
+    tip === 'prijava' && oglas && (
+      <p class="text-sm text-ink-600 bg-ink-50 border border-ink-200 rounded-md px-3 py-2">
+        Prijava za: <span class="font-semibold text-ink-900">{oglas}</span>
+        {stanica && <> · {stanica}</>}
+      </p>
+    )
+  }
+
+  <div>
+    <label for="f-ime" class="block text-sm font-medium text-ink-700 mb-1">Ime i prezime</label>
+    <input id="f-ime" name="Ime" type="text" class="odabir" data-obavezno />
+    <p class="polje-greska" data-greska hidden>Unesite ime i prezime.</p>
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <label for="f-email" class="block text-sm font-medium text-ink-700 mb-1">E-mail</label>
+      <input id="f-email" name="Email" type="email" class="odabir" data-obavezno data-tip="email" />
+      <p class="polje-greska" data-greska hidden>Unesite ispravnu e-mail adresu.</p>
+    </div>
+    <div>
+      <label for="f-telefon" class="block text-sm font-medium text-ink-700 mb-1">Telefon</label>
+      <input id="f-telefon" name="Telefon" type="tel" class="odabir" />
+    </div>
+  </div>
+
+  {
+    tip === 'kontakt' && (
+      <div>
+        <label for="f-stanica" class="block text-sm font-medium text-ink-700 mb-1">Stanica</label>
+        <select id="f-stanica" name="Stanica" class="odabir">
+          <option value="Sjedište">Sjedište (Visoko)</option>
+          {stanice.map((s) => (
+            <option value={s.data.naziv}>{s.data.naziv}</option>
+          ))}
+        </select>
+      </div>
+    )
+  }
+
+  {
+    tip === 'prijava' && (
+      <div>
+        <label for="f-cv" class="block text-sm font-medium text-ink-700 mb-1">
+          CV (PDF ili Word)
+        </label>
+        <input
+          id="f-cv"
+          name="CV"
+          type="file"
+          accept=".pdf,.doc,.docx"
+          class="block w-full text-sm text-ink-700 file:mr-3 file:rounded-md file:border-0 file:bg-brand-100 file:text-brand-900 file:px-3 file:py-2 file:font-medium"
+        />
+        <p class="text-xs text-ink-400 mt-1">Maksimalno 5 MB.</p>
+      </div>
+    )
+  }
+
+  <div>
+    <label for="f-poruka" class="block text-sm font-medium text-ink-700 mb-1">
+      {tip === 'prijava' ? 'Poruka (motivacija)' : 'Poruka'}
+    </label>
+    <textarea id="f-poruka" name="Poruka" rows="4" class="odabir resize-y" data-obavezno></textarea>
+    <p class="polje-greska" data-greska hidden>Unesite poruku.</p>
+  </div>
+
+  <button type="submit" class="btn btn--primary btn--block" data-submit>
+    <Icon name={tip === 'prijava' ? 'check' : 'mail'} size={18} />
+    {tip === 'prijava' ? 'Pošalji prijavu' : 'Pošalji upit'}
+  </button>
+
+  <p data-status role="status" aria-live="polite" class="text-sm"></p>
+
+  {
+    !accessKey && (
+      <p class="text-xs text-ink-400">
+        Napomena za administratora: forma nije konfigurisana — nedostaje
+        PUBLIC_WEB3FORMS_KEY.
+      </p>
+    )
+  }
+</form>
+
+<script>
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  document.querySelectorAll<HTMLFormElement>('[data-web3forma]').forEach((forma) => {
+    const status = forma.querySelector<HTMLElement>('[data-status]');
+    const dugme = forma.querySelector<HTMLButtonElement>('[data-submit]');
+
+    function postaviStatus(tekst: string, vrsta: '' | 'uspjeh' | 'greska'): void {
+      if (!status) return;
+      status.textContent = tekst;
+      status.className = 'text-sm' + (vrsta ? ` status-${vrsta}` : '');
+    }
+
+    function validiraj(): boolean {
+      let prvoNevalidno: HTMLElement | null = null;
+      forma.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[data-obavezno]').forEach((polje) => {
+        const greska = polje.parentElement?.querySelector<HTMLElement>('[data-greska]');
+        const vrijednost = polje.value.trim();
+        let ok = vrijednost !== '';
+        if (ok && polje.dataset.tip === 'email') ok = EMAIL_RE.test(vrijednost);
+
+        polje.classList.toggle('polje-nevalidno', !ok);
+        if (greska) greska.hidden = ok;
+        if (!ok && !prvoNevalidno) prvoNevalidno = polje;
+      });
+      if (prvoNevalidno) {
+        (prvoNevalidno as HTMLElement).focus();
+        postaviStatus('Popravite označena polja.', 'greska');
+        return false;
+      }
+      return true;
+    }
+
+    forma.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Honeypot: ako je popunjen, tiho odustani (bot).
+      const hp = forma.querySelector<HTMLInputElement>('[name="botcheck"]');
+      if (hp?.checked) return;
+
+      if (!validiraj()) return;
+
+      const staroDugme = dugme?.innerHTML ?? '';
+      if (dugme) {
+        dugme.disabled = true;
+        dugme.textContent = 'Šaljem…';
+      }
+      postaviStatus('', '');
+
+      try {
+        const res = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          body: new FormData(forma),
+        });
+        const data = await res.json();
+        if (data.success) {
+          postaviStatus('Hvala! Vaša poruka je poslana. Javit ćemo se uskoro.', 'uspjeh');
+          forma.reset();
+        } else {
+          postaviStatus(data.message || 'Slanje nije uspjelo. Pokušajte ponovo.', 'greska');
+        }
+      } catch {
+        postaviStatus('Greška u vezi. Provjerite internet i pokušajte ponovo.', 'greska');
+      } finally {
+        if (dugme) {
+          dugme.disabled = false;
+          dugme.innerHTML = staroDugme;
+        }
+      }
+    });
+  });
+</script>

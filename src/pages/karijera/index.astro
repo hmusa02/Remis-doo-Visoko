@@ -1,0 +1,81 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import Card from '../../components/Card.astro';
+import Icon from '../../components/Icon.astro';
+import EmptyState from '../../components/EmptyState.astro';
+import Forma from '../../components/Forma.astro';
+import { formatDatum } from '../../lib/format';
+
+// Oglas je aktivan ako je označen aktivnim I rok prijave nije prošao.
+const sada = new Date();
+const stanice = await getCollection('stanice');
+const gradPoSlugu = new Map(stanice.map((s) => [s.data.slug, s.data.grad]));
+
+const oglasi = (await getCollection('oglasi'))
+  .filter((o) => o.data.aktivan && o.data.rokPrijave.getTime() >= sada.getTime())
+  .sort((a, b) => b.data.datumObjave.getTime() - a.data.datumObjave.getTime());
+---
+
+<PageLayout
+  title="Karijera — poslovi u REMIS-u"
+  description="Otvorene pozicije i mogućnosti zaposlenja u REMIS d.o.o. Visoko. Pošaljite nam prijavu i CV."
+  active="/karijera"
+>
+  <section class="wrap pt-8">
+    <Breadcrumbs items={[{ label: 'Početna', href: '/' }, { label: 'Karijera' }]} />
+    <div class="mt-6">
+      <SectionHeading
+        as="h1"
+        eyebrow="Karijera"
+        title="Radite s nama"
+        description="REMIS posluje od 1990. i raste kroz mrežu od deset stanica. Tražimo pouzdane, odgovorne ljude koji rade uredno i s pažnjom prema korisniku."
+      />
+    </div>
+  </section>
+
+  <!-- Aktivni oglasi ili prazno stanje -->
+  <section class="wrap mt-8">
+    {
+      oglasi.length > 0 ? (
+        <div class="grid gap-4 sm:grid-cols-2">
+          {oglasi.map((o) => (
+            <a href={`/karijera/${o.data.slug}`} class="card card--hover p-5 flex flex-col gap-3">
+              <div class="flex items-start justify-between gap-3">
+                <h2 class="font-display font-bold text-lg text-ink-900">{o.data.pozicija}</h2>
+                <Icon name="chevron-right" size={18} class="text-brand-700 shrink-0 mt-1" />
+              </div>
+              <div class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink-500">
+                <span class="inline-flex items-center gap-1.5">
+                  <Icon name="map-pin" size={14} class="text-ink-400" />
+                  {gradPoSlugu.get(o.data.stanica) ?? o.data.stanica}
+                </span>
+                <span>{o.data.tipZaposlenja}</span>
+              </div>
+              <p class="text-sm text-ink-500 mt-auto">Rok prijave: {formatDatum(o.data.rokPrijave)}</p>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <EmptyState
+          icon="inbox"
+          title="Trenutno nemamo otvorenih pozicija"
+          message="Nema aktivnih oglasa u ovom trenutku. Ipak, uvijek nam je drago primiti dobre kandidate — pošaljite nam otvorenu prijavu i CV, javit ćemo se kad se ukaže prilika."
+        />
+      )
+    }
+  </section>
+
+  <!-- Otvorena prijava (uvijek dostupna) -->
+  <section class="wrap mt-12 mb-4">
+    <div class="max-w-2xl">
+      <h2 class="text-title text-ink-900 mb-1">Otvorena prijava</h2>
+      <p class="text-sm text-ink-500 mb-6">Pošaljite nam svoje podatke i CV — čuvamo prijave i javljamo se kad otvorimo poziciju.</p>
+      <Card class="p-6">
+        <Forma tip="prijava" />
+      </Card>
+    </div>
+  </section>
+</PageLayout>

@@ -1,0 +1,172 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Card from '../../components/Card.astro';
+import Icon from '../../components/Icon.astro';
+import Forma from '../../components/Forma.astro';
+import { formatDatum } from '../../lib/format';
+import { firma } from '../../data/firma';
+
+export async function getStaticPaths() {
+  const oglasi = await getCollection('oglasi');
+  return oglasi.map((oglas) => ({
+    params: { slug: oglas.data.slug },
+    props: { oglas },
+  }));
+}
+
+const { oglas } = Astro.props;
+const o = oglas.data;
+
+const sada = new Date();
+const aktivan = o.aktivan && o.rokPrijave.getTime() >= sada.getTime();
+
+const stanica = (await getCollection('stanice')).find((s) => s.data.slug === o.stanica);
+
+const EMP: Record<string, string> = {
+  'Puno radno vrijeme': 'FULL_TIME',
+  'Pola radnog vremena': 'PART_TIME',
+  Ugovor: 'CONTRACTOR',
+  Sezonski: 'TEMPORARY',
+};
+const employmentType = EMP[o.tipZaposlenja] ?? 'OTHER';
+
+const opisHtml =
+  `<p>${o.opis}</p>` +
+  `<p><strong>Uslovi:</strong></p><ul>${o.uslovi.map((u) => `<li>${u}</li>`).join('')}</ul>` +
+  `<p><strong>Nudimo:</strong></p><ul>${o.staNudimo.map((u) => `<li>${u}</li>`).join('')}</ul>`;
+
+const mjesto = stanica
+  ? {
+      streetAddress: stanica.data.adresa,
+      addressLocality: stanica.data.grad,
+      postalCode: stanica.data.postanskiBroj,
+      addressRegion: stanica.data.kanton,
+    }
+  : {
+      streetAddress: firma.adresa,
+      addressLocality: firma.grad,
+      postalCode: firma.postanskiBroj,
+      addressRegion: 'ZE-DO',
+    };
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'JobPosting',
+  title: o.pozicija,
+  description: opisHtml,
+  datePosted: o.datumObjave.toISOString().slice(0, 10),
+  validThrough: o.rokPrijave.toISOString(),
+  employmentType,
+  hiringOrganization: {
+    '@type': 'Organization',
+    name: firma.naziv,
+    sameAs: new URL('/', Astro.site).href,
+  },
+  jobLocation: {
+    '@type': 'Place',
+    address: { '@type': 'PostalAddress', ...mjesto, addressCountry: 'BA' },
+  },
+};
+---
+
+<PageLayout
+  title={`${o.pozicija} — Karijera | REMIS`}
+  description={o.opis}
+  active="/karijera"
+  ogType="article"
+  noindex={!aktivan}
+>
+  <section class="wrap pt-8">
+    <Breadcrumbs
+      items={[
+        { label: 'Početna', href: '/' },
+        { label: 'Karijera', href: '/karijera' },
+        { label: o.pozicija },
+      ]}
+    />
+  </section>
+
+  <section class="wrap mt-6 max-w-3xl">
+    {
+      !aktivan && (
+        <p class="mb-5 text-sm bg-ink-100 border border-ink-200 rounded-md px-4 py-3 text-ink-600">
+          Ova pozicija više nije aktivna. Možete poslati otvorenu prijavu ispod ili
+          pogledati <a href="/karijera" class="text-brand-700 font-medium">ostale pozicije</a>.
+        </p>
+      )
+    }
+
+    <div class="flex items-center gap-2 text-eyebrow uppercase text-brand-700">
+      <span class="w-6 h-px bg-brand-700"></span>
+      Otvorena pozicija
+    </div>
+    <h1 class="text-display text-ink-900 mt-3">{o.pozicija}</h1>
+
+    <div class="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-600">
+      {
+        stanica ? (
+          <a href={`/stanice/${stanica.data.slug}`} class="inline-flex items-center gap-1.5 hover:text-brand-700 transition-colors">
+            <Icon name="map-pin" size={15} class="text-ink-400" />
+            {stanica.data.naziv}
+          </a>
+        ) : (
+          <span class="inline-flex items-center gap-1.5">
+            <Icon name="map-pin" size={15} class="text-ink-400" />
+            {o.stanica}
+          </span>
+        )
+      }
+      <span class="inline-flex items-center gap-1.5">
+        <Icon name="check" size={15} class="text-ink-400" />
+        {o.tipZaposlenja}
+      </span>
+      <span class="inline-flex items-center gap-1.5">
+        <Icon name="clock" size={15} class="text-ink-400" />
+        Rok prijave: {formatDatum(o.rokPrijave)}
+      </span>
+    </div>
+
+    <p class="mt-6 text-ink-700 leading-relaxed">{o.opis}</p>
+
+    <div class="mt-8 grid gap-6 sm:grid-cols-2">
+      <div>
+        <h2 class="font-display font-bold text-ink-900 mb-3">Uslovi</h2>
+        <ul class="space-y-2">
+          {
+            o.uslovi.map((u) => (
+              <li class="flex items-start gap-2.5 text-sm text-ink-700">
+                <Icon name="check" size={16} class="text-brand-700 mt-0.5 shrink-0" />
+                <span>{u}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div>
+        <h2 class="font-display font-bold text-ink-900 mb-3">Šta nudimo</h2>
+        <ul class="space-y-2">
+          {
+            o.staNudimo.map((u) => (
+              <li class="flex items-start gap-2.5 text-sm text-ink-700">
+                <Icon name="check" size={16} class="text-brand-700 mt-0.5 shrink-0" />
+                <span>{u}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Forma za prijavu -->
+  <section class="wrap mt-12 mb-4 max-w-3xl">
+    <h2 class="text-title text-ink-900 mb-4">Prijavite se</h2>
+    <Card class="p-6">
+      <Forma tip="prijava" oglas={o.pozicija} stanica={stanica?.data.naziv ?? o.stanica} />
+    </Card>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+</PageLayout>

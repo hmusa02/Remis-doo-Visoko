@@ -507,3 +507,12 @@
   .faq-ikona { transition: transform 0.2s ease; }
   .faq[open] .faq-ikona { transform: rotate(180deg); }
 }
+
+@layer components {
+  /* --- Forme: greške i stanje slanja -------------------------------------- */
+  .polje-greska { color: #b3261e; font-size: 0.8rem; margin-top: 0.3rem; }
+  .polje-nevalidno { border-color: #b3261e !important; }
+  .status-uspjeh { color: var(--color-open); font-weight: 500; }
+  .status-greska { color: #b3261e; font-weight: 500; }
+  textarea.odabir { background-image: none; padding-right: 0.85rem; line-height: 1.5; }
+}

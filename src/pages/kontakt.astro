@@ -6,6 +6,7 @@ import SectionHeading from '../components/SectionHeading.astro';
 import Card from '../components/Card.astro';
 import Icon from '../components/Icon.astro';
 import MapaStanica from '../components/MapaStanica.astro';
+import Forma from '../components/Forma.astro';
 import { firma } from '../data/firma';
 import type { MarkerPodatak } from '../lib/mapa';
 
@@ -58,46 +59,10 @@ const telSjediste = firma.telefon.replace(/[^\d+]/g, '');
       </address>
     </Card>
 
-    <!-- Kontakt forma (radi bez JS-a: šalje mail preko mailto) -->
+    <!-- Kontakt forma (Web3Forms) -->
     <Card class="p-6">
       <h2 class="text-eyebrow uppercase text-ink-500 mb-4">Pošaljite upit</h2>
-      <form
-        method="post"
-        action={`mailto:${firma.email}`}
-        enctype="text/plain"
-        class="space-y-4"
-      >
-        <div>
-          <label for="ime" class="block text-sm font-medium text-ink-700 mb-1">Ime i prezime</label>
-          <input id="ime" name="Ime" type="text" required class="odabir" />
-        </div>
-        <div class="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label for="email" class="block text-sm font-medium text-ink-700 mb-1">E-mail</label>
-            <input id="email" name="Email" type="email" required class="odabir" />
-          </div>
-          <div>
-            <label for="telefon" class="block text-sm font-medium text-ink-700 mb-1">Telefon</label>
-            <input id="telefon" name="Telefon" type="tel" class="odabir" />
-          </div>
-        </div>
-        <div>
-          <label for="stanica" class="block text-sm font-medium text-ink-700 mb-1">Stanica</label>
-          <select id="stanica" name="Stanica" class="odabir">
-            <option value="Sjedište">Sjedište (Visoko)</option>
-            {stanice.map((s) => <option value={s.data.naziv}>{s.data.naziv}</option>)}
-          </select>
-        </div>
-        <div>
-          <label for="poruka" class="block text-sm font-medium text-ink-700 mb-1">Poruka</label>
-          <textarea id="poruka" name="Poruka" rows="4" required class="odabir resize-y"></textarea>
-        </div>
-        <button type="submit" class="btn btn--primary btn--block">
-          <Icon name="mail" size={18} />
-          Pošalji upit
-        </button>
-        <p class="text-xs text-ink-400">Otvara vaš program za e-poštu s popunjenom porukom.</p>
-      </form>
+      <Forma tip="kontakt" />
     </Card>
   </section>
 

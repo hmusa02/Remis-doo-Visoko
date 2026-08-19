@@ -1,0 +1,30 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<PageLayout
+  title="Stranica nije pronađena — REMIS"
+  description="Tražena stranica ne postoji."
+  noindex
+>
+  <section class="wrap py-20 md:py-28 text-center max-w-xl mx-auto">
+    <p class="text-display text-brand-700 font-extrabold">404</p>
+    <h1 class="text-title text-ink-900 mt-2">Stranica nije pronađena</h1>
+    <p class="mt-4 text-ink-600">
+      Stranica koju tražite ne postoji ili je premještena. Provjerite adresu ili
+      se vratite na početnu.
+    </p>
+    <div class="mt-8 flex flex-wrap gap-3 justify-center">
+      <Button href="/">
+        <Icon name="chevron-left" size={18} />
+        Početna
+      </Button>
+      <Button href="/stanice" variant="secondary">
+        <Icon name="map-pin" size={18} />
+        Sve stanice
+      </Button>
+    </div>
+  </section>
+</PageLayout>

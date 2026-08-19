@@ -36,6 +36,25 @@ const brojevi = [
   { broj: String(firma.osnovana), opis: 'Godina od osnivanja' },
   { broj: `${firma.zaposleni}`, opis: 'Zaposlenih' },
 ];
+
+const organizacijaJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: firma.naziv,
+  url: new URL('/', Astro.site).href,
+  logo: new URL('/favicon.svg', Astro.site).href,
+  foundingDate: String(firma.osnovana),
+  telephone: firma.telefon,
+  email: firma.email,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: firma.adresa,
+    postalCode: firma.postanskiBroj,
+    addressLocality: firma.grad,
+    addressCountry: 'BA',
+  },
+  areaServed: 'Federacija Bosne i Hercegovine',
+};
 ---
 
 <PageLayout
@@ -171,6 +190,8 @@ const brojevi = [
       </div>
     </div>
   </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(organizacijaJsonLd)} is:inline />
 
   <script>
     import { inicijalizirajMapu, type MarkerPodatak, type MapaRezultat } from '../lib/mapa';
