@@ -587,3 +587,21 @@
 @media (prefers-reduced-motion: no-preference) {
   .site-head[data-scrolled] .site-head-inner { height: 3.25rem; }
 }
+
+@layer components {
+  /* --- Lockup naslova stanice (logo + grad skaliraju zajedno) ------------- */
+  .stanica-h1 {
+    font-size: var(--st-size);
+    line-height: 1;
+    letter-spacing: -0.015em;
+  }
+  /* Mali razmak logo → naslov da čitaju kao jedna cjelina, poravnati lijevo */
+  .stanica-lockup .stanica-logo {
+    display: block;
+    margin-bottom: calc(var(--st-size) * 0.06);
+  }
+  /* Sitno lijevo poravnanje glifa logotipa s ivicom naslova */
+  .stanica-lockup .stanica-logo .logo svg {
+    margin-left: -0.02em;
+  }
+}

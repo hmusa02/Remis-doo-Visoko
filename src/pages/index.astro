@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import PageLayout from '../layouts/PageLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import Icon from '../components/Icon.astro';
+import Logo from '../components/Logo.astro';
 import { firma } from '../data/firma';
 import type { MarkerPodatak } from '../lib/mapa';
 
@@ -69,11 +70,11 @@ const organizacijaJsonLd = {
   <section class="bg-ink-50 border-b border-ink-200">
     <div class="wrap py-10 md:py-14 grid gap-8 lg:grid-cols-2 lg:items-center">
       <div>
-        <div class="flex items-center gap-2 text-eyebrow uppercase text-brand-700">
-          <span class="w-6 h-px bg-brand-700"></span>
-          Tehnički pregled vozila
-        </div>
-        <h1 class="text-display text-ink-900 mt-3">Pronađite najbližu stanicu</h1>
+        <span class="block text-brand-700" style="--logo-h: clamp(2.25rem, 7vw, 3.5rem)">
+          <Logo podnaslov={false} />
+        </span>
+        <p class="mt-3 text-eyebrow uppercase text-brand-700">Tehnički pregledi vozila</p>
+        <h1 class="text-display text-ink-900 mt-5">Pronađite najbližu stanicu</h1>
         <p class="mt-4 text-lg text-ink-600 leading-relaxed max-w-xl">
           Deset REMIS stanica u Federaciji BiH. Upišite grad da vidite lokaciju
           na mapi, ili otvorite spisak svih stanica.

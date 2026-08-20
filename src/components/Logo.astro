@@ -8,17 +8,21 @@ import logoSvg from '../assets/remis-logo.svg?raw';
  * podlozi. Visina se kontroliše preko CSS-a (`--logo-h`), omjer se čuva sam.
  */
 interface Props {
-  /** Visina wordmarka u px. */
+  /** Visina wordmarka u px. Ako se izostavi, nasljeđuje `--logo-h` iz CSS-a. */
   height?: number;
   /** Prikaži službeni podnaslov „Tehnički pregledi vozila". */
   podnaslov?: boolean;
   class?: string;
 }
-const { height = 30, podnaslov = true, class: klasa = '' } = Astro.props;
+const { height, podnaslov = true, class: klasa = '' } = Astro.props;
 ---
 
 <span class={`inline-flex flex-col ${klasa}`}>
-  <span class="logo" style={`--logo-h:${height}px`} set:html={logoSvg} />
+  <span
+    class="logo"
+    style={height !== undefined ? `--logo-h:${height}px` : undefined}
+    set:html={logoSvg}
+  />
   {
     podnaslov && (
       <span class="text-[10px] font-semibold tracking-[0.16em] uppercase mt-1 text-ink-500">
