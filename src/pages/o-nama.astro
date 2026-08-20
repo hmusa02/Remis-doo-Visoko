@@ -8,9 +8,9 @@ import { firma } from '../data/firma';
 import { telefonHref } from '../lib/format';
 
 const brojevi = [
-  { broj: String(firma.osnovana), opis: 'Godina osnivanja' },
-  { broj: '10', opis: 'Stanica u FBiH' },
-  { broj: `${firma.zaposleni}`, opis: 'Zaposlenih' },
+  { broj: String(firma.osnovana), opis: 'Godina osnivanja', count: null },
+  { broj: '10', opis: 'Stanica u FBiH', count: 10 },
+  { broj: `${firma.zaposleni}`, opis: 'Zaposlenih', count: firma.zaposleni },
 ];
 ---
 
@@ -46,12 +46,14 @@ const brojevi = [
   </section>
 
   <!-- Brojevi -->
-  <section class="bg-ink-50 border-y border-ink-200 my-12">
+  <section class="bg-ink-50 border-y border-ink-200 my-12" data-reveal>
     <div class="wrap py-10 grid grid-cols-3 gap-6 text-center">
       {
         brojevi.map((b) => (
           <div>
-            <p class="text-4xl md:text-5xl font-extrabold tabular-nums text-brand-700">{b.broj}</p>
+            <p class="text-4xl md:text-5xl font-extrabold tabular-nums text-brand-700">
+              {b.count !== null ? <span data-count={b.count}>{b.broj}</span> : b.broj}
+            </p>
             <p class="text-sm text-ink-600 mt-1">{b.opis}</p>
           </div>
         ))

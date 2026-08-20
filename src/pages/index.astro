@@ -31,9 +31,9 @@ const brzi = [
 ];
 
 const brojevi = [
-  { broj: '10', opis: 'Stanica u Federaciji BiH' },
-  { broj: String(firma.osnovana), opis: 'Godina od osnivanja' },
-  { broj: `${firma.zaposleni}`, opis: 'Zaposlenih' },
+  { broj: '10', opis: 'Stanica u Federaciji BiH', count: 10 },
+  { broj: String(firma.osnovana), opis: 'Godina od osnivanja', count: null },
+  { broj: `${firma.zaposleni}`, opis: 'Zaposlenih', count: firma.zaposleni },
 ];
 
 const organizacijaJsonLd = {
@@ -122,7 +122,7 @@ const organizacijaJsonLd = {
   </section>
 
   <!-- Brzi linkovi -->
-  <section class="wrap py-12">
+  <section class="wrap py-12" data-reveal>
     <div class="grid gap-4 sm:grid-cols-3">
       {
         brzi.map((b) => (
@@ -141,7 +141,7 @@ const organizacijaJsonLd = {
   </section>
 
   <!-- Usluge -->
-  <section class="wrap py-6">
+  <section class="wrap py-6" data-reveal>
     <SectionHeading eyebrow="Šta radimo" title="Naše usluge" description="Tehnički pregled svih kategorija vozila, registracija i osiguranje — na jednom mjestu." />
     <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {
@@ -159,12 +159,14 @@ const organizacijaJsonLd = {
   </section>
 
   <!-- Brojevi -->
-  <section class="bg-ink-50 border-y border-ink-200 my-12">
+  <section class="bg-ink-50 border-y border-ink-200 my-12" data-reveal>
     <div class="wrap py-10 grid grid-cols-3 gap-6 text-center">
       {
         brojevi.map((b) => (
           <div>
-            <p class="text-4xl md:text-5xl font-extrabold tabular-nums text-brand-700">{b.broj}</p>
+            <p class="text-4xl md:text-5xl font-extrabold tabular-nums text-brand-700">
+              {b.count !== null ? <span data-count={b.count}>{b.broj}</span> : b.broj}
+            </p>
             <p class="text-sm text-ink-600 mt-1">{b.opis}</p>
           </div>
         ))
@@ -173,7 +175,7 @@ const organizacijaJsonLd = {
   </section>
 
   <!-- O firmi -->
-  <section class="wrap py-6">
+  <section class="wrap py-6" data-reveal>
     <div class="max-w-2xl">
       <SectionHeading eyebrow="O nama" title="Pouzdano od 1990." />
       <p class="mt-4 text-ink-600 leading-relaxed">

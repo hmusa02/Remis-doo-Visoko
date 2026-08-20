@@ -20,5 +20,18 @@
   },
   "pravnoLice": "TRANSPORT d.o.o. Kakanj",
   "napomena": "Stanica posluje kao TRANSPORT d.o.o. Kakanj, društvo u stopostotnom vlasništvu REMIS d.o.o. Visoko.",
+  "usluge": [
+    "tehnicki-pregled-putnickih-vozila",
+    "tehnicki-pregled-teretnih-vozila",
+    "tehnicki-pregled-autobusa",
+    "tehnicki-pregled-motocikala",
+    "tehnicki-pregled-prikljucnih-vozila",
+    "tehnicki-pregled-traktora",
+    "vanredni-pregled",
+    "preventivni-pregled",
+    "eksploatacioni-pregled",
+    "registracija-vozila",
+    "osiguranje-vozila"
+  ],
   "redoslijed": 4
 }

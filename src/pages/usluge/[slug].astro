@@ -39,10 +39,12 @@ const cjenovnikRedovi = cjenovnik
 
 const imaDokumente = Array.isArray(u.potrebniDokumenti) && u.potrebniDokumenti.length > 0;
 
-// Stanice — dok ne stignu podaci po usluzi, prikazujemo sve stanice.
-const stanice = (await getCollection('stanice')).sort(
+// Stanice koje nude OVU uslugu (prema polju `usluge` svake stanice).
+const sveStanice = (await getCollection('stanice')).sort(
   (a, b) => a.data.redoslijed - b.data.redoslijed,
 );
+const stanice = sveStanice.filter((s) => s.data.usluge?.includes(u.slug));
+const naSvim = stanice.length === sveStanice.length;
 ---
 
 <PageLayout
@@ -122,7 +124,26 @@ const stanice = (await getCollection('stanice')).sort(
   <!-- Stanice -->
   <section class="wrap mt-12 mb-4">
     <h2 class="text-title text-ink-900 mb-2">Gdje se radi</h2>
-    <p class="text-sm text-ink-500 mb-4">Dostupno na svim REMIS stanicama u Federaciji BiH.</p>
+    {
+      naSvim ? (
+        <p class="text-sm text-ink-500 mb-4">Dostupno na svim REMIS stanicama u Federaciji BiH.</p>
+      ) : (
+        <div class="mb-5 rounded-card bg-brand-700 text-white p-5">
+          <div class="flex items-start gap-3">
+            <Icon name="map-pin" size={20} class="mt-0.5 shrink-0" />
+            <div>
+              <p class="font-semibold text-white">
+                Ova usluga se radi samo na {stanice.length} lokacije:
+                {stanice.map((s, i) => (
+                  <>{i > 0 ? ' i ' : ' '}<a href={`/stanice/${s.data.slug}`} class="underline">{s.data.grad}</a></>
+                ))}.
+              </p>
+              <p class="mt-1 text-sm text-white/85">Za ostale usluge posjetite bilo koju od naših stanica.</p>
+            </div>
+          </div>
+        </div>
+      )
+    }
     <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {
         stanice.map((s) => (

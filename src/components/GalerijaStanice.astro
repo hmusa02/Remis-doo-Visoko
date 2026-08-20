@@ -88,6 +88,15 @@ const pune = await Promise.all(
   const lbCount = document.querySelector<HTMLElement>('[data-lb-count]');
   const slides = Array.from(document.querySelectorAll<HTMLElement>('.galerija-slide'));
 
+  // --- Fade-in slika kad se učitaju (osim kad je reduced-motion) ---
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    traka?.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
+      if (img.complete) return;
+      img.classList.add('fade-load');
+      img.addEventListener('load', () => img.classList.add('ucitano'), { once: true });
+    });
+  }
+
   // --- Listanje trake strelicama (desktop) ---
   function korak(): number {
     const w = traka?.querySelector<HTMLElement>('.galerija-slide-wrap');

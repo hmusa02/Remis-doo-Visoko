@@ -38,6 +38,11 @@ const prikazaneUsluge = imaVlastite
   ? sveUsluge.filter((u) => d.usluge!.includes(u.data.slug))
   : sveUsluge;
 
+// Posebne usluge (homologacija / certifikacija) — samo Zenica i Sarajevo.
+const posebne = prikazaneUsluge.filter((u) =>
+  ['homologacija', 'certifikacija'].includes(u.data.slug),
+);
+
 // Oglasi: samo aktivni za ovu stanicu.
 const oglasi = (await getCollection('oglasi')).filter(
   (o) => o.data.stanica === d.slug && o.data.aktivan,
@@ -204,6 +209,27 @@ const jsonLd = {
           Pozovi
         </a>}
       </div>
+
+      {
+        posebne.length > 0 && (
+          <div class="mt-6 rounded-card bg-brand-700 text-white p-5">
+            <div class="flex items-start gap-3">
+              <Icon name="check" size={20} class="mt-0.5 shrink-0" />
+              <div>
+                <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/70">Samo na ovoj lokaciji</p>
+                <h2 class="mt-1 font-display font-bold text-lg text-white">
+                  Radimo i {posebne.map((u, i) => (
+                    <>{i > 0 ? ' i ' : ''}<a href={`/usluge/${u.data.slug}`} class="underline">{u.data.naziv.toLowerCase()}</a></>
+                  ))}
+                </h2>
+                <p class="mt-1.5 text-sm text-white/85">
+                  Ove usluge nudimo samo u Zenici i Sarajevu — ne morate ih tražiti na drugoj stanici.
+                </p>
+              </div>
+            </div>
+          </div>
+        )
+      }
     </div>
 
     <!-- Radno vrijeme -->

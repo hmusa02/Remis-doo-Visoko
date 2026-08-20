@@ -18,5 +18,20 @@
     "ime": "Mihnet Turčinović",
     "telefon": "061 414 185"
   },
+  "usluge": [
+    "tehnicki-pregled-putnickih-vozila",
+    "tehnicki-pregled-teretnih-vozila",
+    "tehnicki-pregled-autobusa",
+    "tehnicki-pregled-motocikala",
+    "tehnicki-pregled-prikljucnih-vozila",
+    "tehnicki-pregled-traktora",
+    "vanredni-pregled",
+    "preventivni-pregled",
+    "eksploatacioni-pregled",
+    "registracija-vozila",
+    "osiguranje-vozila",
+    "homologacija",
+    "certifikacija"
+  ],
   "redoslijed": 10
 }

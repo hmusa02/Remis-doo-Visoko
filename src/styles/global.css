@@ -523,3 +523,67 @@
   .logo { display: inline-block; line-height: 0; }
   .logo svg { height: var(--logo-h, 30px); width: auto; display: block; }
 }
+
+/* =========================================================================
+   ANIMACIJE (suptilne) — sve gašeno uz prefers-reduced-motion.
+   Sadržaj je uvijek prisutan; animira se samo ULAZAK.
+   ========================================================================= */
+
+/* Glatko otvaranje <details> (FAQ) — moderni ::details-content + interpolate-size */
+:root { interpolate-size: allow-keywords; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* --- Reveal sekcija (aktivno tek kad JS doda .anim-js na <html>) -------- */
+  .anim-js [data-reveal] {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    will-change: opacity, transform;
+  }
+  .anim-js [data-reveal].vidljivo {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* --- FAQ accordion: glatko otvaranje/zatvaranje ------------------------- */
+  .faq::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition: block-size 0.28s ease, content-visibility 0.28s allow-discrete;
+  }
+  .faq[open]::details-content {
+    block-size: auto;
+  }
+
+  /* --- OTVORENO indikator: nježan puls (samo kad je otvoreno) ------------- */
+  .badge[data-state="open"] .badge-dot { position: relative; }
+  .badge[data-state="open"] .badge-dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background: currentColor;
+    animation: puls-otvoreno 2.2s ease-out infinite;
+  }
+  @keyframes puls-otvoreno {
+    0%   { transform: scale(1);   opacity: 0.5; }
+    100% { transform: scale(2.6); opacity: 0;   }
+  }
+
+  /* --- Galerija: fade-in slike kad se učita ------------------------------- */
+  .galerija-slide img.fade-load { opacity: 0; }
+  .galerija-slide img.fade-load.ucitano {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  /* --- Header: blago skupljanje pri skrolu -------------------------------- */
+  .site-head-inner { transition: height 0.25s ease; }
+}
+
+/* Sjena headera pri skrolu (nije osjetljivo na reduced-motion, ali blaga tranzicija) */
+.site-head { transition: box-shadow 0.25s ease; }
+.site-head[data-scrolled] { box-shadow: 0 4px 16px -8px rgb(26 20 22 / 0.22); }
+@media (prefers-reduced-motion: no-preference) {
+  .site-head[data-scrolled] .site-head-inner { height: 3.25rem; }
+}

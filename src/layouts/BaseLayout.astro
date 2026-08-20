@@ -65,5 +65,8 @@ const ogImage = new URL(image, Astro.site).href;
   </head>
   <body class="min-h-dvh flex flex-col">
     <slot />
+    <script>
+      import '../lib/anim';
+    </script>
   </body>
 </html>

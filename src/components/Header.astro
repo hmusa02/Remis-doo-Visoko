@@ -23,8 +23,8 @@ const nav = [
 ];
 ---
 
-<header class="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-ink-200">
-  <div class="wrap flex items-center justify-between h-16">
+<header class="site-head sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-ink-200" data-header>
+  <div class="site-head-inner wrap flex items-center justify-between h-16">
     <a href="/" aria-label="REMIS — Tehnički pregledi vozila, početna" class="text-brand-700">
       <Logo />
     </a>
@@ -129,4 +129,23 @@ const nav = [
   window.matchMedia('(min-width: 768px)').addEventListener('change', (e) => {
     if (e.matches) postavi(false);
   });
+
+  // Header se blago skupi i dobije sjenu pri skrolu.
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  let ceka = false;
+  function osvjeziHeader(): void {
+    header?.toggleAttribute('data-scrolled', window.scrollY > 8);
+    ceka = false;
+  }
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!ceka) {
+        window.requestAnimationFrame(osvjeziHeader);
+        ceka = true;
+      }
+    },
+    { passive: true },
+  );
+  osvjeziHeader();
 </script>
