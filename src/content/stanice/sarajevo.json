@@ -19,17 +19,7 @@
     "telefon": "061 608 659"
   },
   "usluge": [
-    "tehnicki-pregled-putnickih-vozila",
-    "tehnicki-pregled-teretnih-vozila",
-    "tehnicki-pregled-autobusa",
-    "tehnicki-pregled-motocikala",
-    "tehnicki-pregled-prikljucnih-vozila",
-    "tehnicki-pregled-traktora",
-    "vanredni-pregled",
-    "preventivni-pregled",
-    "eksploatacioni-pregled",
-    "registracija-vozila",
-    "osiguranje-vozila",
+    "tehnicki-pregled",
     "homologacija",
     "certifikacija"
   ],

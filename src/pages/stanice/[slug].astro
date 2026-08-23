@@ -8,6 +8,7 @@ import GalerijaStanice from '../../components/GalerijaStanice.astro';
 import Card from '../../components/Card.astro';
 import Icon from '../../components/Icon.astro';
 import Logo from '../../components/Logo.astro';
+import Ovlastenje from '../../components/Ovlastenje.astro';
 import { slikeStanice } from '../../lib/slike';
 import { statusStanice } from '../../lib/radno-vrijeme';
 import { telefonHref } from '../../lib/format';
@@ -228,6 +229,7 @@ const jsonLd = {
           </div>
         )
       }
+      {posebne.length > 0 && <Ovlastenje class="mt-4" />}
     </div>
 
     <!-- Radno vrijeme -->
@@ -277,6 +279,17 @@ const jsonLd = {
         ))
       }
     </div>
+    {
+      posebne.length === 0 && (
+        <p class="mt-4 text-sm text-ink-500">
+          <a href="/usluge/homologacija" class="text-brand-700 font-medium">Homologacija</a> i
+          <a href="/usluge/certifikacija" class="text-brand-700 font-medium"> certifikacija</a> vozila
+          rade se na stanicama u
+          <a href="/stanice/zenica" class="text-brand-700 font-medium"> Zenici</a> i
+          <a href="/stanice/sarajevo" class="text-brand-700 font-medium">Sarajevu</a>.
+        </p>
+      )
+    }
   </section>
 
   <!-- Otvorene pozicije (samo ako ima aktivan oglas) -->

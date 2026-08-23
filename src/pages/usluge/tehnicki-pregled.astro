@@ -1,0 +1,220 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Card from '../../components/Card.astro';
+import Icon from '../../components/Icon.astro';
+
+const stanice = (await getCollection('stanice')).sort(
+  (a, b) => a.data.redoslijed - b.data.redoslijed,
+);
+
+// Šta ponijeti / kako doći
+const priprema = [
+  {
+    icon: 'droplet' as const,
+    naslov: 'Vozilo čisto',
+    tekst: 'Prljavo vozilo se ne može pregledati — kontrolor mora vidjeti karoseriju, brojeve i podvozje.',
+  },
+  {
+    icon: 'building' as const,
+    naslov: 'Vozilo prazno',
+    tekst: 'Dođite bez tereta. Pun prtljažnik ometa provjeru i mjerenje.',
+  },
+  {
+    icon: 'clipboard-check' as const,
+    naslov: 'Dokumenti',
+    tekst: 'Saobraćajna dozvola (ili potvrda o registraciji); atest ako su mijenjani tehnički podaci.',
+  },
+];
+
+// Vrste pregleda
+const vrste = [
+  {
+    naziv: 'Redovni pregled',
+    tekst: 'Obavlja se jednom godišnje. Možete doći najranije 30 dana prije isteka registracije.',
+  },
+  {
+    naziv: 'Šestomjesečni (preventivni)',
+    tekst: 'Obavezan za rent-a-car vozila, autoškole, taksi, autobuse, ADR vozila i teretna vozila preko 7.500 kg.',
+  },
+  {
+    naziv: 'Tromjesečni',
+    tekst: 'Za vozila starija od 20 godina — pregled se obavlja svaka tri mjeseca.',
+    istaknuto: true,
+  },
+  {
+    naziv: 'Vanredni',
+    tekst: 'Radi se po nalogu nadležnog organa ili na zahtjev, kada postoji sumnja u ispravnost vozila.',
+  },
+  {
+    naziv: 'Eksploatacioni',
+    tekst: 'Za vozila u stalnoj radnoj upotrebi (npr. taksi, dostava), koja se provjeravaju češće i temeljitije.',
+  },
+  {
+    naziv: 'EKO test',
+    tekst: 'Provjera izduvnih gasova uz redovni pregled. Od 2020. je eliminatoran — vozilo mora zadovoljiti i njega da bi prošlo.',
+  },
+];
+
+// Kako teče pregled
+const koraci = [
+  { icon: 'search' as const, naslov: 'Identifikacija', tekst: 'Provjera broja šasije i podataka vozila prema dokumentima.' },
+  { icon: 'check' as const, naslov: 'Vizuelni pregled', tekst: 'Karoserija, gume, stakla, svjetla i oznake.' },
+  { icon: 'gauge' as const, naslov: 'Pregled uređajima', tekst: 'Mjerenje kočnica, svjetala, izduvnih gasova i ovjesa.' },
+];
+
+const samoprovjera = [
+  'Kočnice (najčešći uzrok pada)',
+  'Svjetla i pokazivači smjera',
+  'Gume i dubina šare',
+  'Brisači',
+  'Retrovizori i stakla',
+  'Izduvni sistem',
+];
+---
+
+<PageLayout
+  title="Tehnički pregled vozila — vrste, priprema i tok | REMIS"
+  description="Sve o tehničkom pregledu: redovni, vanredni, preventivni, tromjesečni i eksploatacioni pregled, EKO test, šta ponijeti i kako teče pregled. Na svih 10 REMIS stanica."
+  active="/usluge"
+>
+  <section class="wrap pt-8">
+    <Breadcrumbs
+      items={[
+        { label: 'Početna', href: '/' },
+        { label: 'Usluge', href: '/usluge' },
+        { label: 'Tehnički pregled' },
+      ]}
+    />
+    <div class="mt-6 max-w-3xl">
+      <div class="flex items-center gap-2 text-eyebrow uppercase text-brand-700">
+        <span class="w-6 h-px bg-brand-700"></span>
+        Usluga
+      </div>
+      <h1 class="text-display text-ink-900 mt-3">Tehnički pregled</h1>
+      <p class="mt-4 text-lg text-ink-600 leading-relaxed">
+        Pregled vozila svih kategorija na svih deset naših stanica. Ispod je sve
+        što vam treba — od pripreme, preko vrsta pregleda, do toka samog pregleda.
+      </p>
+    </div>
+  </section>
+
+  <!-- 1. Šta ponijeti i kako doći -->
+  <section class="wrap mt-10" data-reveal>
+    <h2 class="text-title text-ink-900 mb-4">Šta ponijeti i kako doći</h2>
+    <div class="grid gap-4 md:grid-cols-3">
+      {
+        priprema.map((s) => (
+          <Card class="p-6">
+            <span class="w-11 h-11 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center">
+              <Icon name={s.icon} size={20} />
+            </span>
+            <h3 class="mt-4 font-display font-bold text-ink-900">{s.naslov}</h3>
+            <p class="mt-1.5 text-sm text-ink-600 leading-relaxed">{s.tekst}</p>
+          </Card>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- 2. Vrste pregleda -->
+  <section class="wrap mt-12" data-reveal>
+    <h2 class="text-title text-ink-900 mb-4">Vrste pregleda</h2>
+    <div class="grid gap-4 sm:grid-cols-2">
+      {
+        vrste.map((v) =>
+          v.istaknuto ? (
+            <div class="rounded-card bg-brand-700 text-white p-5">
+              <h3 class="font-display font-bold text-lg text-white">{v.naziv}</h3>
+              <p class="mt-1.5 text-sm text-white/85 leading-relaxed">{v.tekst}</p>
+            </div>
+          ) : (
+            <Card class="p-5">
+              <h3 class="font-semibold text-ink-900">{v.naziv}</h3>
+              <p class="mt-1 text-sm text-ink-600 leading-relaxed">{v.tekst}</p>
+            </Card>
+          ),
+        )
+      }
+    </div>
+  </section>
+
+  <!-- 3. Kako teče pregled -->
+  <section class="wrap mt-12" data-reveal>
+    <h2 class="text-title text-ink-900 mb-1">Kako teče pregled</h2>
+    <p class="text-sm text-ink-500 mb-6">Za putničko vozilo cijeli pregled traje oko 20–30 minuta.</p>
+    <div class="grid gap-4 md:grid-cols-3">
+      {
+        koraci.map((k, i) => (
+          <Card class="p-6 relative">
+            <span class="absolute top-5 right-5 text-3xl font-extrabold text-ink-100 tabular-nums">{i + 1}</span>
+            <span class="w-11 h-11 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center">
+              <Icon name={k.icon} size={20} />
+            </span>
+            <h3 class="mt-4 font-display font-bold text-ink-900">{k.naslov}</h3>
+            <p class="mt-1.5 text-sm text-ink-600 leading-relaxed">{k.tekst}</p>
+          </Card>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- 4. Šta provjeriti prije dolaska -->
+  <section class="wrap mt-12" data-reveal>
+    <div class="grid gap-6 lg:grid-cols-2 lg:items-center">
+      <div>
+        <div class="flex items-center gap-2.5 mb-3">
+          <Icon name="wrench" size={22} class="text-brand-700" />
+          <h2 class="text-title text-ink-900">Provjerite prije dolaska</h2>
+        </div>
+        <p class="text-ink-600 leading-relaxed">
+          Kočnice su najčešći uzrok pada na pregledu. Pet minuta provjere kod kuće
+          može vam uštedjeti ponovni dolazak.
+        </p>
+      </div>
+      <Card class="p-6">
+        <ul class="grid sm:grid-cols-2 gap-x-6 gap-y-2.5">
+          {
+            samoprovjera.map((s) => (
+              <li class="flex items-start gap-2.5 text-sm text-ink-700">
+                <Icon name="check" size={16} class="text-brand-700 mt-0.5 shrink-0" />
+                <span>{s}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </Card>
+    </div>
+  </section>
+
+  <!-- 5. Cjenovnik -->
+  <section class="wrap mt-12" data-reveal>
+    <a href="/cjenovnik" class="card card--hover p-6 flex items-center justify-between gap-4">
+      <span>
+        <span class="block font-display font-bold text-lg text-ink-900">Cjenovnik</span>
+        <span class="block text-sm text-ink-600 mt-0.5">Cijene po kategorijama vozila; za putnička i po vrsti pogona (EKO test).</span>
+      </span>
+      <Icon name="arrow-right" size={22} class="text-brand-700 shrink-0" />
+    </a>
+  </section>
+
+  <!-- 6. Gdje se radi -->
+  <section class="wrap mt-12 mb-4" data-reveal>
+    <h2 class="text-title text-ink-900 mb-2">Gdje se radi</h2>
+    <p class="text-sm text-ink-500 mb-4">Tehnički pregled radimo na svih 10 stanica u Federaciji BiH.</p>
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        stanice.map((s) => (
+          <a href={`/stanice/${s.data.slug}`} class="card card--hover p-4 flex items-center justify-between gap-3">
+            <span>
+              <span class="block font-medium text-ink-900">{s.data.naziv}</span>
+              <span class="block text-xs text-ink-500">{s.data.grad}</span>
+            </span>
+            <Icon name="chevron-right" size={18} class="text-brand-700 shrink-0" />
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</PageLayout>

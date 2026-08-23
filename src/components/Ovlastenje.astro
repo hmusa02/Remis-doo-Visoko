@@ -1,0 +1,22 @@
+---
+import Icon from './Icon.astro';
+
+/**
+ * Istaknuti red — ovlaštenje za homologaciju i certifikaciju.
+ * Bordo akcent, ikona, jedan red teksta. Bez velikih bedževa/pečata.
+ */
+interface Props {
+  class?: string;
+}
+const { class: klasa = '' } = Astro.props;
+---
+
+<p
+  class={`flex items-start gap-2.5 text-sm rounded-md border border-brand-200 bg-brand-100/50 text-brand-900 px-3.5 py-2.5 ${klasa}`}
+>
+  <Icon name="shield-check" size={18} class="text-brand-700 mt-0.5 shrink-0" />
+  <span>
+    Poslove homologacije i certifikacije vozila obavljamo pod ovlaštenjem
+    Ministarstva komunikacija i prometa Bosne i Hercegovine.
+  </span>
+</p>

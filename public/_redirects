@@ -1,0 +1,13 @@
+# Cloudflare Pages — redirecti
+# Stare pojedinačne stranice usluga → nova struktura (301)
+/usluge/tehnicki-pregled-putnickih-vozila    /usluge/tehnicki-pregled   301
+/usluge/tehnicki-pregled-teretnih-vozila      /usluge/tehnicki-pregled   301
+/usluge/tehnicki-pregled-autobusa             /usluge/tehnicki-pregled   301
+/usluge/tehnicki-pregled-motocikala           /usluge/tehnicki-pregled   301
+/usluge/tehnicki-pregled-prikljucnih-vozila   /usluge/tehnicki-pregled   301
+/usluge/tehnicki-pregled-traktora             /usluge/tehnicki-pregled   301
+/usluge/vanredni-pregled                      /usluge/tehnicki-pregled   301
+/usluge/preventivni-pregled                   /usluge/tehnicki-pregled   301
+/usluge/eksploatacioni-pregled                /usluge/tehnicki-pregled   301
+/usluge/registracija-vozila                   /usluge                    301
+/usluge/osiguranje-vozila                     /usluge                    301

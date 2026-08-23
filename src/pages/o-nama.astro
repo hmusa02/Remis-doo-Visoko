@@ -4,6 +4,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import Button from '../components/Button.astro';
 import Icon from '../components/Icon.astro';
+import Ovlastenje from '../components/Ovlastenje.astro';
 import { firma } from '../data/firma';
 import { telefonHref } from '../lib/format';
 
@@ -58,6 +59,14 @@ const brojevi = [
           </div>
         ))
       }
+    </div>
+  </section>
+
+  <!-- Ovlaštenja -->
+  <section class="wrap py-2" data-reveal>
+    <SectionHeading eyebrow="Povjerenje" title="Ovlaštenja" />
+    <div class="mt-6 max-w-3xl">
+      <Ovlastenje />
     </div>
   </section>
 

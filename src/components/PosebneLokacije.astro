@@ -1,0 +1,45 @@
+---
+import { getCollection } from 'astro:content';
+import Icon from './Icon.astro';
+import { telefonHref } from '../lib/format';
+
+/**
+ * Istaknut bordo blok: usluga se radi samo u Zenici i Sarajevu — s linkovima
+ * na te dvije stanice i njihovim telefonima.
+ */
+interface Props {
+  naslov: string;
+}
+const { naslov } = Astro.props;
+
+const stanice = await getCollection('stanice');
+const lokacije = ['zenica', 'sarajevo']
+  .map((slug) => stanice.find((s) => s.data.slug === slug))
+  .filter((s): s is NonNullable<typeof s> => Boolean(s));
+---
+
+<div class="rounded-card bg-brand-700 text-white p-6">
+  <div class="flex items-start gap-3">
+    <Icon name="map-pin" size={22} class="mt-0.5 shrink-0" />
+    <div class="w-full">
+      <h2 class="font-display font-bold text-lg text-white">{naslov}</h2>
+      <div class="mt-4 grid gap-3 sm:grid-cols-2">
+        {
+          lokacije.map((s) => (
+            <div class="rounded-md bg-white/10 p-4">
+              <a href={`/stanice/${s.data.slug}`} class="font-semibold text-white underline">{s.data.naziv}</a>
+              <p class="text-sm text-white/85 mt-1">{s.data.adresa}, {s.data.grad}</p>
+              <a
+                href={`tel:${telefonHref(s.data.telefon)}`}
+                class="inline-flex items-center gap-1.5 text-sm text-white mt-2 tabular-nums"
+              >
+                <Icon name="phone" size={14} />
+                {s.data.telefon}
+              </a>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</div>

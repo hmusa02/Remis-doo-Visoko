@@ -8,11 +8,18 @@ import Icon from '../../components/Icon.astro';
 const usluge = (await getCollection('usluge')).sort(
   (a, b) => a.data.redoslijed - b.data.redoslijed,
 );
+
+// Slug → ikona (tipovi koje Icon sigurno poznaje).
+const IKONE: Record<string, 'car' | 'clipboard-check' | 'check'> = {
+  'tehnicki-pregled': 'car',
+  homologacija: 'clipboard-check',
+  certifikacija: 'check',
+};
 ---
 
 <PageLayout
-  title="Usluge — tehnički pregled i registracija | REMIS"
-  description="Tehnički pregled svih kategorija vozila, vanredni i preventivni pregled, registracija i osiguranje vozila na REMIS stanicama u FBiH."
+  title="Usluge — tehnički pregled, homologacija i certifikacija | REMIS"
+  description="Tehnički pregled svih kategorija vozila na 10 stanica, te homologacija i certifikacija vozila u Zenici i Sarajevu."
   active="/usluge"
 >
   <section class="wrap pt-8">
@@ -22,21 +29,21 @@ const usluge = (await getCollection('usluge')).sort(
         as="h1"
         eyebrow="Šta radimo"
         title="Usluge"
-        description="Kompletan tehnički pregled i registracija vozila svih kategorija — na jednom mjestu, na svih 10 stanica."
+        description="Tehnički pregled vozila svih kategorija na svih deset stanica, te homologacija i certifikacija vozila u Zenici i Sarajevu."
       />
     </div>
   </section>
 
   <section class="wrap mt-8 mb-6" data-reveal>
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="grid gap-4 sm:grid-cols-3">
       {
         usluge.map((u) => (
-          <a href={`/usluge/${u.data.slug}`} class="card card--hover p-5 flex flex-col gap-3">
+          <a href={`/usluge/${u.data.slug}`} class="card card--hover p-6 flex flex-col gap-3">
             <span class="w-11 h-11 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center">
-              <Icon name="check" size={20} />
+              <Icon name={IKONE[u.data.slug] ?? 'check'} size={20} />
             </span>
             <span>
-              <span class="block font-semibold text-ink-900">{u.data.naziv}</span>
+              <span class="block font-display font-bold text-lg text-ink-900">{u.data.naziv}</span>
               <span class="block text-sm text-ink-600 mt-1">{u.data.kratkiOpis}</span>
             </span>
             <span class="mt-auto inline-flex items-center gap-1 text-sm font-semibold text-brand-700">

@@ -13,10 +13,22 @@ const stanice = (await getCollection('stanice')).sort(
   (a, b) => a.data.redoslijed - b.data.redoslijed,
 );
 
+const staniceNav = stanice.map((s) => ({
+  label: s.data.naziv,
+  href: `/stanice/${s.data.slug}`,
+  sub: s.data.grad,
+}));
+
+const uslugeNav = [
+  { label: 'Tehnički pregled', href: '/usluge/tehnicki-pregled', sub: undefined },
+  { label: 'Homologacija', href: '/usluge/homologacija', sub: undefined },
+  { label: 'Certifikacija', href: '/usluge/certifikacija', sub: undefined },
+];
+
 const nav = [
   { label: 'Početna', href: '/' },
-  { label: 'Stanice', href: '/stanice', dropdown: true },
-  { label: 'Usluge', href: '/usluge' },
+  { label: 'Stanice', href: '/stanice', items: staniceNav },
+  { label: 'Usluge', href: '/usluge', items: uslugeNav },
   { label: 'Cjenovnik', href: '/cjenovnik' },
   { label: 'Karijera', href: '/karijera' },
   { label: 'Kontakt', href: '/kontakt' },
@@ -32,7 +44,7 @@ const nav = [
     <nav class="hidden md:flex items-center gap-0.5" aria-label="Glavna navigacija">
       {
         nav.map((n) =>
-          n.dropdown ? (
+          n.items ? (
             <div class="dropdown">
               <a
                 href={n.href}
@@ -44,10 +56,10 @@ const nav = [
                 <Icon name="chevron-down" size={14} />
               </a>
               <div class="dropdown-panel">
-                {stanice.map((s) => (
-                  <a href={`/stanice/${s.data.slug}`} class="dropdown-item">
-                    <span>{s.data.naziv}</span>
-                    <span class="grad">{s.data.grad}</span>
+                {n.items.map((it) => (
+                  <a href={it.href} class="dropdown-item">
+                    <span>{it.label}</span>
+                    {it.sub && <span class="grad">{it.sub}</span>}
                   </a>
                 ))}
               </div>
@@ -97,7 +109,19 @@ const nav = [
         </div>
       </details>
 
-      <a href="/usluge" class="mobilni-link" aria-current={active === '/usluge' ? 'page' : undefined}>Usluge</a>
+      <details class="border-b border-ink-100">
+        <summary class="mobilni-link list-none flex items-center justify-between cursor-pointer">
+          <span>Usluge</span>
+          <Icon name="chevron-down" size={18} class="text-ink-400" />
+        </summary>
+        <div class="pb-2">
+          <a href="/usluge" class="block py-2 pl-3 text-sm font-semibold text-brand-700">Sve usluge →</a>
+          {uslugeNav.map((it) => (
+            <a href={it.href} class="block py-2 pl-3 text-sm text-ink-700">{it.label}</a>
+          ))}
+        </div>
+      </details>
+
       <a href="/cjenovnik" class="mobilni-link" aria-current={active === '/cjenovnik' ? 'page' : undefined}>Cjenovnik</a>
       <a href="/karijera" class="mobilni-link" aria-current={active === '/karijera' ? 'page' : undefined}>Karijera</a>
       <a href="/kontakt" class="mobilni-link" aria-current={active === '/kontakt' ? 'page' : undefined}>Kontakt</a>

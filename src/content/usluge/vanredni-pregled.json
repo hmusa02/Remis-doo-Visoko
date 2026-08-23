@@ -1,8 +1,0 @@
-{
-  "slug": "vanredni-pregled",
-  "naziv": "Vanredni tehnički pregled",
-  "kratkiOpis": "Dodatni pregled kada to zatraži policija ili nadležni organ.",
-  "opis": "Vanredni pregled se radi kada postoji sumnja da vozilo nije ispravno, najčešće na zahtjev policije ili inspekcije. Provjerava se dio vozila zbog kojeg ste upućeni na pregled, ili cijelo vozilo. Nakon otklanjanja nedostataka dobijate potvrdu o ispravnosti.",
-  "ikona": "alert-triangle",
-  "redoslijed": 7
-}

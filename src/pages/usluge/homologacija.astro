@@ -1,0 +1,110 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Card from '../../components/Card.astro';
+import Icon from '../../components/Icon.astro';
+import Ovlastenje from '../../components/Ovlastenje.astro';
+import PosebneLokacije from '../../components/PosebneLokacije.astro';
+
+const ponijeti = [
+  'saobraćajnu dozvolu iz zemlje iz koje se vozilo uvozi (za polovna)',
+  'kupoprodajni ugovor',
+  'jedinstvenu carinsku ispravu',
+  'tehničku dokumentaciju proizvođača ili COC dokument',
+  'dokaz o uplaćenoj naknadi',
+];
+---
+
+<PageLayout
+  title="Homologacija vozila — uvoz i prva registracija | REMIS"
+  description="Homologacija uvezenih vozila u skladu s tehničkim propisima BiH. Šta ponijeti, kako teče postupak i posebnosti vozila s američkog tržišta. Zenica i Sarajevo."
+  active="/usluge"
+>
+  <section class="wrap pt-8">
+    <Breadcrumbs
+      items={[
+        { label: 'Početna', href: '/' },
+        { label: 'Usluge', href: '/usluge' },
+        { label: 'Homologacija vozila' },
+      ]}
+    />
+  </section>
+
+  <section class="wrap mt-6 max-w-3xl">
+    <div class="flex items-center gap-2 text-eyebrow uppercase text-brand-700">
+      <span class="w-6 h-px bg-brand-700"></span>
+      Usluga
+    </div>
+    <h1 class="text-display text-ink-900 mt-3">Homologacija vozila</h1>
+
+    <!-- Ovlaštenje — istaknuto pri vrhu -->
+    <Ovlastenje class="mt-5" />
+
+    <div class="mt-6 space-y-4 text-ink-700 leading-relaxed">
+      <p>
+        Homologacija je postupak kojim se potvrđuje da uvezeno vozilo odgovara
+        tehničkim propisima koji vrijede u Bosni i Hercegovini. Provodi se za nova
+        i polovna vozila koja se pojedinačno uvoze — bilo radi prodaje, bilo za
+        vlastite potrebe. Bez potvrde o usklađenosti vozilo se ne može carinski
+        ocariniti ni prvi put registrovati.
+      </p>
+      <p>
+        Prilikom pregleda provjeravaju se uređaji od kojih zavisi sigurnost vožnje
+        i ekološka ispravnost vozila: kočnice, upravljački mehanizam, svjetla i
+        signalizacija, gume, sigurnosni pojasevi, te emisija izduvnih gasova i buka.
+      </p>
+    </div>
+  </section>
+
+  <!-- Šta ponijeti -->
+  <section class="wrap mt-10 max-w-3xl" data-reveal>
+    <h2 class="text-title text-ink-900 mb-4">Šta ponijeti</h2>
+    <Card class="p-6">
+      <ul class="space-y-2.5">
+        {
+          ponijeti.map((d) => (
+            <li class="flex items-start gap-2.5 text-ink-700">
+              <Icon name="check" size={18} class="text-brand-700 mt-0.5 shrink-0" />
+              <span>{d}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </Card>
+  </section>
+
+  <!-- Kako teče -->
+  <section class="wrap mt-10 max-w-3xl" data-reveal>
+    <h2 class="text-title text-ink-900 mb-4">Kako teče</h2>
+    <p class="text-ink-700 leading-relaxed">
+      Vozilo se dovodi na pregled zajedno s pripadajućom dokumentacijom, pa se
+      tokom pregleda utvrđuje odgovara li propisanim uvjetima. Ako odgovara,
+      izdaje se potvrda o usklađenosti koja se prilaže pri prvoj registraciji. Ako
+      ne odgovara, ostavlja se rok za otklanjanje nedostataka i vozilo se dovodi
+      na ponovni pregled.
+    </p>
+  </section>
+
+  <!-- Vozila s američkog tržišta -->
+  <section class="wrap mt-10 max-w-3xl" data-reveal>
+    <div class="rounded-card border border-ink-200 bg-ink-50 p-6">
+      <div class="flex items-start gap-3">
+        <Icon name="alert-triangle" size={20} class="text-brand-700 mt-0.5 shrink-0" />
+        <div>
+          <h2 class="font-display font-bold text-lg text-ink-900">Vozila s američkog tržišta</h2>
+          <p class="mt-1.5 text-ink-700 leading-relaxed">
+            Vozila proizvedena po američkim standardima često zahtijevaju dodatna
+            ispitivanja i zamjenu pojedinih sklopova prije nego mogu proći
+            homologaciju. Prije kupovine takvog vozila preporučujemo da nas
+            kontaktirate i provjerite je li uvoz uopšte moguć.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gdje se radi (samo Zenica i Sarajevo) -->
+  <section class="wrap mt-12 mb-4 max-w-3xl" data-reveal>
+    <PosebneLokacije naslov="Homologacija se radi samo u Zenici i Sarajevu" />
+  </section>
+</PageLayout>

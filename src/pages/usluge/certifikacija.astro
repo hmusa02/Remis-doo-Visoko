@@ -1,0 +1,107 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Card from '../../components/Card.astro';
+import Icon from '../../components/Icon.astro';
+import Ovlastenje from '../../components/Ovlastenje.astro';
+import PosebneLokacije from '../../components/PosebneLokacije.astro';
+
+const promjene = [
+  'ugradnja vučne kuke',
+  'ugradnja plinske instalacije',
+  'promjena namjene ili broja sjedišta',
+  'prepravke na nadogradnji',
+  'ugradnja ili zamjena motora',
+];
+
+const ponijeti = [
+  'saobraćajnu dozvolu',
+  'dokumentaciju o ugrađenom dijelu ili opremi',
+  'račun ili atest proizvođača ugrađenog sklopa',
+];
+---
+
+<PageLayout
+  title="Certifikacija vozila — atest za ugradnje i promjene | REMIS"
+  description="Certifikacija i atestiranje vozila kod promjene tehničkih karakteristika: kuka, plin, motor, namjena. Šta ponijeti i gdje se radi. Zenica i Sarajevo."
+  active="/usluge"
+>
+  <section class="wrap pt-8">
+    <Breadcrumbs
+      items={[
+        { label: 'Početna', href: '/' },
+        { label: 'Usluge', href: '/usluge' },
+        { label: 'Certifikacija vozila' },
+      ]}
+    />
+  </section>
+
+  <section class="wrap mt-6 max-w-3xl">
+    <div class="flex items-center gap-2 text-eyebrow uppercase text-brand-700">
+      <span class="w-6 h-px bg-brand-700"></span>
+      Usluga
+    </div>
+    <h1 class="text-display text-ink-900 mt-3">Certifikacija vozila</h1>
+
+    <!-- Ovlaštenje — istaknuto pri vrhu -->
+    <Ovlastenje class="mt-5" />
+
+    <div class="mt-6 space-y-4 text-ink-700 leading-relaxed">
+      <p>
+        Certifikacija se provodi kada se na vozilu mijenjaju tehničke
+        karakteristike u odnosu na one upisane u dokumentaciju — ugradnja kuke,
+        plinske instalacije, promjena namjene ili broja sjedišta, prepravke na
+        nadogradnji, ugradnja ili zamjena motora.
+      </p>
+      <p>
+        Nakon izvršenog pregleda izdaje se atest odnosno certifikat, koji je
+        osnova za upis promjena u saobraćajnu dozvolu. Bez toga se tehnički
+        pregled ne može obaviti ako podaci na vozilu ne odgovaraju dokumentaciji.
+      </p>
+      <p>
+        Certifikacija je potrebna i kada broj šasije nije čitljiv ili nedostaje,
+        te u drugim slučajevima kada je potrebno utvrditi stvarne tehničke
+        karakteristike vozila.
+      </p>
+    </div>
+  </section>
+
+  <!-- Kada je potrebna -->
+  <section class="wrap mt-10 max-w-3xl" data-reveal>
+    <h2 class="text-title text-ink-900 mb-4">Kada je potrebna</h2>
+    <Card class="p-6">
+      <ul class="grid sm:grid-cols-2 gap-x-6 gap-y-2.5">
+        {
+          promjene.map((p) => (
+            <li class="flex items-start gap-2.5 text-ink-700">
+              <Icon name="check" size={18} class="text-brand-700 mt-0.5 shrink-0" />
+              <span>{p}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </Card>
+  </section>
+
+  <!-- Šta ponijeti -->
+  <section class="wrap mt-10 max-w-3xl" data-reveal>
+    <h2 class="text-title text-ink-900 mb-4">Šta ponijeti</h2>
+    <Card class="p-6">
+      <ul class="space-y-2.5">
+        {
+          ponijeti.map((d) => (
+            <li class="flex items-start gap-2.5 text-ink-700">
+              <Icon name="check" size={18} class="text-brand-700 mt-0.5 shrink-0" />
+              <span>{d}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </Card>
+  </section>
+
+  <!-- Gdje se radi (samo Zenica i Sarajevo) -->
+  <section class="wrap mt-12 mb-4 max-w-3xl" data-reveal>
+    <PosebneLokacije naslov="Certifikacija se radi samo u Zenici i Sarajevu" />
+  </section>
+</PageLayout>

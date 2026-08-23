@@ -1,8 +1,8 @@
 {
   "slug": "certifikacija",
   "naziv": "Certifikacija vozila",
-  "kratkiOpis": "Potvrda da vozilo ili naknadna ugradnja odgovaraju propisima.",
-  "opis": "Certifikacija je stručna provjera i potvrda da vozilo ili naknadna ugradnja (npr. plinski uređaj, vučna kuka, preinaka) odgovaraju propisima. Dokument koji dobijete koristi se pri registraciji i kod nadležnih organa. Ovu uslugu radimo samo na stanicama u Zenici i Sarajevu.",
+  "kratkiOpis": "Atest za ugradnje i promjene tehničkih karakteristika vozila.",
+  "opis": "Pregled i izdavanje atesta kada se na vozilu mijenjaju tehničke karakteristike (kuka, plin, motor, namjena). Obavlja se u Zenici i Sarajevu.",
   "ikona": "check",
-  "redoslijed": 13
+  "redoslijed": 3
 }
