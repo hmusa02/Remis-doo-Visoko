@@ -367,7 +367,7 @@
 }
 
 @layer components {
-  /* --- Form kontrole (select filter) ------------------------------------- */
+  /* --- Form kontrole (input, select, textarea) --------------------------- */
   .odabir {
     width: 100%;
     appearance: none;
@@ -375,15 +375,20 @@
     color: var(--color-ink-900);
     border: 1px solid var(--color-ink-300);
     border-radius: var(--radius-btn);
-    padding: 0.6rem 2.25rem 0.6rem 0.85rem;
+    padding: 0.6rem 0.85rem;
     font-size: 0.9rem;
+  }
+  .odabir:hover { border-color: var(--color-ink-400); }
+  .odabir:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 1px; }
+
+  /* Chevron SAMO za <select> (ne za text/email/tel inpute) */
+  select.odabir {
     cursor: pointer;
+    padding-right: 2.25rem;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23756a6d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.75rem center;
   }
-  .odabir:hover { border-color: var(--color-ink-400); }
-  .odabir:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 1px; }
 }
 
 @layer components {
@@ -515,7 +520,13 @@
   .polje-nevalidno { border-color: #b3261e !important; }
   .status-uspjeh { color: var(--color-open); font-weight: 500; }
   .status-greska { color: #b3261e; font-weight: 500; }
-  textarea.odabir { background-image: none; padding-right: 0.85rem; line-height: 1.5; }
+  textarea.odabir { line-height: 1.5; }
+
+  /* Custom upload: fokus na skrivenom inputu → prsten na dugmetu (labeli) */
+  .file-upload input:focus-visible + label {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
 }
 
 @layer components {
