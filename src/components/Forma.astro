@@ -23,10 +23,15 @@ const { tip, oglas, stanica } = Astro.props;
 
 const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
 if (!accessKey) {
-  console.warn(
-    '[REMIS] Forma nije konfigurisana (nedostaje PUBLIC_WEB3FORMS_KEY) — prikazan je neutralan kontakt fallback umjesto forme.',
+  // Informativno pri buildu; posjetiocu se prikazuje neutralan fallback.
+  console.info(
+    '[REMIS] Forma nije konfigurisana — prikazan je neutralan kontakt fallback. Postavi ključ u okruženju da se forma aktivira.',
   );
 }
+
+// E-mail za prijave (ako je zadan) ide u fallback kontakt za prijavu na posao.
+const prijaveEmail = import.meta.env.PUBLIC_PRIJAVE_EMAIL || firma.email;
+const fallbackEmail = tip === 'prijava' ? prijaveEmail : firma.email;
 
 const subject =
   tip === 'prijava'
@@ -146,9 +151,9 @@ const telFirma = telefonHref(firma.telefon);
           <Icon name="phone" size={16} class="text-ink-400" />
           <span class="tabular-nums">{firma.telefon}</span>
         </a>
-        <a href={`mailto:${firma.email}`} class="inline-flex items-center gap-2.5 text-ink-800 hover:text-brand-700 transition-colors w-fit">
+        <a href={`mailto:${fallbackEmail}`} class="inline-flex items-center gap-2.5 text-ink-800 hover:text-brand-700 transition-colors w-fit">
           <Icon name="mail" size={16} class="text-ink-400" />
-          <span>{firma.email}</span>
+          <span>{fallbackEmail}</span>
         </a>
       </div>
     </div>

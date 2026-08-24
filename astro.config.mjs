@@ -14,5 +14,9 @@ export default defineConfig({
   ],
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      // MapLibre GL je velik, ali se učitava lijeno (ne blokira prvi paint).
+      chunkSizeWarningLimit: 1500,
+    },
   },
 });

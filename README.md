@@ -25,18 +25,25 @@ Produkcijski URL: **https://mis.ba**
 
 ## Okruženje
 
-Kopiraj `.env.example` u `.env` i popuni:
+Kopiraj `.env.example` u `.env` (lokalno) i postavi iste varijable u Cloudflare
+Pages. Sve su `PUBLIC_` (idu u klijentski build) — ne stavljaj tajne.
 
-```
-PUBLIC_WEB3FORMS_KEY=...   # javni ključ s https://web3forms.com (forme)
-```
+| Varijabla              | Značenje                                                             |
+| ---------------------- | ------------------------------------------------------------------- |
+| `PUBLIC_WEB3FORMS_KEY` | Javni ključ s https://web3forms.com. Bez njega forma se ne prikazuje (fallback: telefon + e-mail). |
+| `PUBLIC_NOINDEX`       | Podrazumijevano je sajt **noindex** (sigurno za pages.dev). Za produkciju na pravom domenu postavi `false`. |
+| `PUBLIC_PRIJAVE_EMAIL` | E-mail na koji stižu prijave za posao (fallback kontakt na `/karijera`). |
 
 ## Deploy — Cloudflare Pages
 
 - **Build command:** `npm run build`
 - **Output directory:** `dist`
-- **Environment variable:** `PUBLIC_WEB3FORMS_KEY`
-- HTTP headeri (cache + sigurnost) su u `public/_headers`.
+- **Node:** zaključan u `.nvmrc` (`22`) i `package.json` → `engines`.
+- **Environment variables:** `PUBLIC_WEB3FORMS_KEY`, `PUBLIC_NOINDEX`, `PUBLIC_PRIJAVE_EMAIL`.
+- HTTP headeri (cache + sigurnost) su u `public/_headers`; redirecti u `public/_redirects`.
+- **Indeksiranje:** dok je `PUBLIC_NOINDEX` ≠ `false`, `robots.txt` blokira sve i
+  svaka stranica ima `<meta name="robots" content="noindex, nofollow">`. Otključaj
+  tek na produkcijskom domenu.
 - Oglasi se skidaju po isteku roka tek na **sljedećem buildu**, pa je
   preporučeno uključiti periodični (npr. dnevni) redeploy.
 

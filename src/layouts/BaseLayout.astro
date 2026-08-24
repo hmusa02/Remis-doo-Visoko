@@ -26,6 +26,11 @@ const {
   noindex = false,
 } = Astro.props;
 
+// Podrazumijevano NOINDEX (sigurno za pages.dev). Za produkciju na pravom
+// domenu postavi PUBLIC_NOINDEX=false. Prop `noindex` uvijek pojačava zabranu.
+const indeksiranjeDozvoljeno = import.meta.env.PUBLIC_NOINDEX === 'false';
+const noindexAktivan = noindex || !indeksiranjeDozvoljeno;
+
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL(image, Astro.site).href;
 ---
@@ -43,7 +48,7 @@ const ogImage = new URL(image, Astro.site).href;
 
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {noindexAktivan && <meta name="robots" content="noindex, nofollow" />}
 
     <!-- Open Graph -->
     <meta property="og:type" content={ogType} />

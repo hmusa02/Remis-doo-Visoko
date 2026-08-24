@@ -39,7 +39,7 @@ const { columns, rows, caption, class: klasa = '' } = Astro.props;
           <tr>
             {columns.map((c) => (
               <td data-label={c.label} class={c.numeric ? 'rtable-num' : ''}>
-                {row[c.key]}
+                {c.numeric ? <span class="whitespace-nowrap">{row[c.key]}</span> : row[c.key]}
               </td>
             ))}
           </tr>
