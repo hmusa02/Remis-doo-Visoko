@@ -48,8 +48,9 @@ export const cjenovnik: StavkaCjenovnika[] = [
   { kod: 'M2', kategorija: 'Putnička', naziv: 'M2 minibus (preko 8 sj., do 5 t)', vanredni: 37.33, redovni: 110.66 },
   { kod: 'M3', kategorija: 'Putnička', naziv: 'M3 autobus (preko 8 sj., preko 5 t)', vanredni: 44.91, redovni: 125.83 },
 
-  // TERETNA
-  { kod: 'N1', kategorija: 'Teretna', naziv: 'N1 (do 3,5 t)', vanredni: 32.67, redovni: 101.33 },
+  // TERETNA — N1 razbijen po gorivu (redovni), vanredni ostaje jedan
+  { kod: 'N1', kategorija: 'Teretna', naziv: 'N1 (n.d. masa <3,5 t)', varijanta: 'benzin', vanredni: 32.67, redovni: 97.33 },
+  { kod: 'N1', kategorija: 'Teretna', naziv: 'N1 (n.d. masa <3,5 t)', varijanta: 'dizel', vanredni: 32.67, redovni: 101.33 },
   { kod: 'N2', kategorija: 'Teretna', naziv: 'N2 (3,5-12 t)', vanredni: 44.91, redovni: 125.83 },
   { kod: 'N3', kategorija: 'Teretna', naziv: 'N3 (preko 12 t)', vanredni: 49.58, redovni: 135.16 },
 
