@@ -14,16 +14,23 @@ const usluge = (await getCollection('usluge')).sort(
   (a, b) => a.data.redoslijed - b.data.redoslijed,
 );
 
-const gradovi = [...new Set(stanice.map((s) => s.data.grad))].sort((a, b) =>
-  a.localeCompare(b, 'bs'),
-);
-
 const markeri: MarkerPodatak[] = stanice.map((s) => ({
   slug: s.data.slug,
   naziv: s.data.naziv,
   lng: s.data.lng,
   lat: s.data.lat,
 }));
+
+// Lista za izbor lokacije — jedna stavka po stanici (dva Konjica se razlikuju).
+// Labela je naziv bez prefiksa firme; sortirano abecedno.
+const gradoviList = stanice
+  .map((s) => ({
+    slug: s.data.slug,
+    labela: s.data.naziv.replace(/^(REMIS|Transport)\s+/, ''),
+    lng: s.data.lng,
+    lat: s.data.lat,
+  }))
+  .sort((a, b) => a.labela.localeCompare(b.labela, 'bs'));
 
 const brzi = [
   { naziv: 'Cjenovnik', opis: 'Cijene po kategorijama vozila', href: '/cjenovnik', icon: 'clipboard-check' as const },
@@ -80,28 +87,42 @@ const organizacijaJsonLd = {
           na mapi, ili otvorite spisak svih stanica.
         </p>
 
-        <form class="mt-6 flex flex-col sm:flex-row gap-3 sm:items-end" data-pronadji>
-          <div class="flex-1">
-            <label for="grad" class="block text-xs font-semibold uppercase tracking-wide text-ink-500 mb-1.5">Grad</label>
-            <input
-              id="grad"
-              name="grad"
-              type="text"
-              list="gradovi-lista"
-              autocomplete="off"
-              placeholder="Npr. Sarajevo"
-              class="odabir"
-            />
-            <datalist id="gradovi-lista">
-              {gradovi.map((g) => <option value={g}></option>)}
-            </datalist>
+        <div class="mt-6 max-w-sm">
+          <span id="grad-labela" class="block text-xs font-semibold uppercase tracking-wide text-ink-500 mb-1.5">
+            Odaberite lokaciju
+          </span>
+          <div class="grad-select" data-grad-select>
+            <button
+              type="button"
+              class="odabir grad-trigger"
+              data-grad-trigger
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-labelledby="grad-labela grad-vrijednost"
+            >
+              <span id="grad-vrijednost" data-grad-vrijednost>Odaberite stanicu</span>
+              <Icon name="chevron-down" size={18} class="grad-strelica text-ink-400 shrink-0" />
+            </button>
+            <ul class="grad-panel" data-grad-panel role="listbox" aria-labelledby="grad-labela" hidden>
+              {
+                gradoviList.map((g) => (
+                  <li
+                    class="grad-option"
+                    role="option"
+                    tabindex="-1"
+                    aria-selected="false"
+                    data-slug={g.slug}
+                    data-lng={g.lng}
+                    data-lat={g.lat}
+                  >
+                    {g.labela}
+                  </li>
+                ))
+              }
+            </ul>
           </div>
-          <button type="submit" class="btn btn--primary">
-            <Icon name="map-pin" size={18} />
-            Pronađi
-          </button>
-        </form>
-        <p class="mt-2 text-sm text-ink-500" data-rezultat aria-live="polite"></p>
+        </div>
+        <p class="mt-3 text-sm text-ink-600" data-rezultat aria-live="polite"></p>
         <a href="/stanice" class="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-brand-700">
           Sve stanice
           <Icon name="arrow-right" size={16} />
@@ -197,8 +218,6 @@ const organizacijaJsonLd = {
     import { inicijalizirajMapu, type MarkerPodatak, type MapaRezultat } from '../lib/mapa';
 
     const kontejner = document.querySelector<HTMLElement>('[data-home-mapa]');
-    const forma = document.querySelector<HTMLFormElement>('[data-pronadji]');
-    const unos = document.querySelector<HTMLInputElement>('#grad');
     const rezultat = document.querySelector<HTMLElement>('[data-rezultat]');
 
     let mapa: MapaRezultat | null = null;
@@ -227,28 +246,94 @@ const organizacijaJsonLd = {
       obs.observe(kontejner);
     }
 
-    forma?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const upit = (unos?.value ?? '').trim();
-      if (!upit) return;
+    // --- Custom dropdown za izbor lokacije (bez kucanja, otvara prema dolje) ---
+    const select = document.querySelector<HTMLElement>('[data-grad-select]');
+    const trigger = document.querySelector<HTMLButtonElement>('[data-grad-trigger]');
+    const panel = document.querySelector<HTMLElement>('[data-grad-panel]');
+    const vrijednost = document.querySelector<HTMLElement>('[data-grad-vrijednost]');
+    const opcije = Array.from(document.querySelectorAll<HTMLElement>('.grad-option'));
 
-      // Naziv stanice sadrži ime grada (npr. „REMIS Sarajevo“), pa poklapamo po nazivu.
-      const cilj = markeri.filter((m) => m.naziv.toLowerCase().includes(upit.toLowerCase()));
+    function otvoren(): boolean {
+      return trigger?.getAttribute('aria-expanded') === 'true';
+    }
+    function postavi(otvori: boolean): void {
+      if (!trigger || !panel) return;
+      trigger.setAttribute('aria-expanded', String(otvori));
+      panel.hidden = !otvori;
+    }
+    function fokusiraj(i: number): void {
+      const n = opcije.length;
+      if (n === 0) return;
+      const idx = ((i % n) + n) % n;
+      opcije.forEach((o) => o.classList.remove('istaknut'));
+      opcije[idx]!.classList.add('istaknut');
+      opcije[idx]!.focus();
+    }
 
-      if (cilj.length === 0) {
-        if (rezultat) rezultat.textContent = `Nema stanice za „${upit}“. Pogledajte spisak svih stanica.`;
-        return;
+    trigger?.addEventListener('click', () => {
+      const novo = !otvoren();
+      postavi(novo);
+      if (novo) fokusiraj(0);
+    });
+
+    trigger?.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        postavi(true);
+        fokusiraj(0);
       }
+    });
 
-      const prva = cilj[0]!;
+    function odaberi(o: HTMLElement): void {
+      opcije.forEach((x) => x.setAttribute('aria-selected', 'false'));
+      o.setAttribute('aria-selected', 'true');
+      if (vrijednost) vrijednost.textContent = o.textContent?.trim() ?? '';
+      postavi(false);
+      trigger?.focus();
+
+      const slug = o.dataset.slug ?? '';
+      const lng = Number(o.dataset.lng);
+      const lat = Number(o.dataset.lat);
+      const naziv = o.textContent?.trim() ?? '';
       if (rezultat) {
-        rezultat.textContent =
-          cilj.length === 1
-            ? `Pronađeno: ${prva.naziv}.`
-            : `Pronađeno ${cilj.length} stanica za „${upit}“.`;
+        rezultat.innerHTML = `Odabrano: <strong>${naziv}</strong> — <a href="/stanice/${slug}" class="text-brand-700 font-medium">otvori stanicu →</a>`;
       }
-      mapa?.map.flyTo({ center: [prva.lng, prva.lat], zoom: 14, duration: 800 });
-      mapa?.markeri[prva.slug]?.togglePopup();
+      mapa?.map.flyTo({ center: [lng, lat], zoom: 14, duration: 800 });
+      mapa?.markeri[slug]?.togglePopup();
+      kontejner?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    opcije.forEach((o, i) => {
+      o.addEventListener('click', () => odaberi(o));
+      o.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          odaberi(o);
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          fokusiraj(i + 1);
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          fokusiraj(i - 1);
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          fokusiraj(0);
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          fokusiraj(opcije.length - 1);
+        }
+      });
+    });
+
+    // Zatvori na klik izvan i na Esc.
+    document.addEventListener('click', (e) => {
+      if (otvoren() && select && !select.contains(e.target as Node)) postavi(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && otvoren()) {
+        postavi(false);
+        trigger?.focus();
+      }
     });
   </script>
 </PageLayout>

@@ -53,8 +53,13 @@ const telFirma = telefonHref(firma.telefon);
       <input type="hidden" name="access_key" value={accessKey} />
       <input type="hidden" name="subject" value={subject} />
       <input type="hidden" name="from_name" value="REMIS web" />
-      {oglas && <input type="hidden" name="Oglas" value={oglas} />}
-      {stanica && <input type="hidden" name="Stanica" value={stanica} />}
+      {/* Kontekst u tijelu maila: na koji oglas i koju stanicu se prijava odnosi */}
+      {tip === 'prijava' && (
+        <>
+          <input type="hidden" name="Oglas" value={oglas ?? 'Otvorena prijava'} />
+          <input type="hidden" name="Stanica" value={stanica ?? 'Bez određene stanice'} />
+        </>
+      )}
 
       {/* Honeypot — skriven od korisnika, boti ga popune */}
       <input
