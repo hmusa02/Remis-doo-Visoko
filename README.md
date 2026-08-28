@@ -12,7 +12,7 @@ pregled vozila sa 10 stanica u Federaciji BiH. Sajt je na bosanskom jeziku.
 - [Web3Forms](https://web3forms.com/) — slanje formi (kontakt i prijava)
 - Deploy: [Cloudflare Pages](https://pages.cloudflare.com/)
 
-Produkcijski URL: **https://mis.ba**
+Produkcijski URL: **https://remis.ba**
 
 ## Komande
 

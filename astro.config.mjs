@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://mis.ba',
+  site: 'https://remis.ba',
   integrations: [
     sitemap({
       // /demo je interni pregled dizajn sistema — van sitemapa.

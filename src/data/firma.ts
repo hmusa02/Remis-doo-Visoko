@@ -14,7 +14,7 @@ export const firma = {
   grad: 'Visoko',
   telefon: '032 730 300',
   email: 'info@remis.ba',
-  web: 'www.remis.ba',
+  web: 'remis.ba',
   /** Registarski podaci (memorandum). */
   sud: 'Kantonalni sud u Zenici',
   maticniBroj: '43-01-0121-10',
